@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".loginActivity"
-    android:background="@drawable/loginimage">
+    android:background="@drawable/registerpage"
+    tools:context=".MainActivity">
 
     <TextView
         android:layout_width="251dp"
@@ -18,7 +18,7 @@
         android:layout_marginTop="39dp"
         android:layout_marginEnd="77dp"
         android:layout_marginBottom="30dp"
-        android:text="login page"
+        android:text="register page"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="30dp"></TextView>
@@ -35,26 +35,26 @@
         android:layout_marginTop="590dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="71dp"
-        android:text="don't have an account? press here"
+        android:text="already have an account? press here"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20dp"/>
 
     <Button
-        android:id="@+id/logInBtn"
-        android:layout_width="197dp"
-        android:layout_height="137dp"
+        android:id="@+id/registerBtn"
+        android:layout_width="219dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="107dp"
-        android:layout_marginTop="427dp"
-        android:layout_marginEnd="107dp"
-        android:layout_marginBottom="167dp"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="468dp"
+        android:layout_marginEnd="91dp"
+        android:layout_marginBottom="150dp"
         android:background="@android:color/transparent"
-        android:text="log in"
+        android:text="SIGN UP"
         android:textSize="35dp"
         app:backgroundTint="@null" />
 
@@ -77,4 +77,16 @@
         android:layout_marginBottom="443dp"
         android:text="password"
         android:textColor="@color/white" />
+
+    <EditText
+        android:layout_width="209dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="98dp"
+        android:layout_marginBottom="374dp"
+        android:text="email"
+        android:textColor="@color/white" />
+
+
 </RelativeLayout>
