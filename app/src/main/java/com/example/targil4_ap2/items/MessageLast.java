@@ -1,11 +1,11 @@
 package com.example.targil4_ap2.items;
 
 public class MessageLast {
-    private int id;
+    private String id;
     private String created;
     private String content;
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -17,7 +17,7 @@ public class MessageLast {
         this.content = content;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -29,7 +29,7 @@ public class MessageLast {
         return content;
     }
 
-    public MessageLast(int id, String created, String content) {
+    public MessageLast(String id, String created, String content) {
         this.id = id;
         this.created = created;
         this.content = content;

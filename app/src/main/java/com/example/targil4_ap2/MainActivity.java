@@ -10,13 +10,20 @@ import android.widget.Button;
 
 import com.example.targil4_ap2.api.UsersApiToken;
 
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
     Button loginBtn, registerBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UsersApiToken user=new UsersApiToken();
-        user.getToken("ofek","o123$");
+        user.postChat("ofek","o123$","ariel");
         setContentView(R.layout.activity_main);
         loginBtn = findViewById(R.id.loginPage);
         registerBtn = findViewById(R.id.registerPage);

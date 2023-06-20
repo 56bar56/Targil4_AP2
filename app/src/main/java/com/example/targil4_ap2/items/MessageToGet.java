@@ -1,19 +1,19 @@
 package com.example.targil4_ap2.items;
 
 public class MessageToGet {
-    private int id;
+    private String id;
     private String created;
     private String content;
     private SenderName sender;
 
-    public MessageToGet(int id, String created, String content, SenderName sender) {
+    public MessageToGet(String id, String created, String content, SenderName sender) {
         this.id = id;
         this.created = created;
         this.content = content;
         this.sender = sender;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -29,7 +29,7 @@ public class MessageToGet {
         this.sender = sender;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

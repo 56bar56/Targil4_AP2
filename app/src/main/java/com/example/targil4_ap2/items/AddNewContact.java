@@ -1,10 +1,10 @@
 package com.example.targil4_ap2.items;
 
 public class AddNewContact {
-    private int id;
+    private String id;
     private UserToGet user;
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -12,7 +12,7 @@ public class AddNewContact {
         this.user = user;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -20,7 +20,7 @@ public class AddNewContact {
         return user;
     }
 
-    public AddNewContact(int id, UserToGet user) {
+    public AddNewContact(String id, UserToGet user) {
         this.id = id;
         this.user = user;
     }

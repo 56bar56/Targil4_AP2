@@ -2,9 +2,10 @@ package com.example.targil4_ap2.api;
 
 import com.example.targil4_ap2.MyApplication;
 import com.example.targil4_ap2.R;
+import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.ContactForCreate;
-import com.example.targil4_ap2.items.AddNewContact;
+import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
@@ -21,8 +22,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UsersApiToken {
-    Retrofit retrofit;
-    WebServiceAPI webServiceAPI;
+    private Retrofit retrofit;
+    private WebServiceAPI webServiceAPI;
 
     public UsersApiToken() {
         retrofit = new Retrofit.Builder()
@@ -30,6 +31,7 @@ public class UsersApiToken {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
+
     }
 
     public void getToken(String username, String password) {
@@ -38,8 +40,8 @@ public class UsersApiToken {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    String token = response.body().string();
-                    System.out.println(token);
+                    String tokenRec = response.body().string();
+                    System.out.println(tokenRec);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -52,8 +54,8 @@ public class UsersApiToken {
         });
     }
 
-    public String postUser(String token, UserToPost user) {
-        Call<ResponseBody> call = webServiceAPI.postUser(token, user);
+    public void postUser(UserToPost user) {
+        Call<ResponseBody> call = webServiceAPI.postUser(user);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -70,59 +72,103 @@ public class UsersApiToken {
                 System.out.println("filed");
             }
         });
-        return "";
     }
 
-    public void getUser(String token, String username) {
-        Call<List<UserToGet>> call = webServiceAPI.getUser(token, username);
-        call.enqueue(new Callback<List<UserToGet>>() {
-            @Override
-            public void onResponse(Call<List<UserToGet>> call, Response<List<UserToGet>> response) {
-                List<UserToGet> serverReturn = response.body();
-            }
+    public void getUser(String username, String password) {
 
-            @Override
-            public void onFailure(Call<List<UserToGet>> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
-    }
-    public void getChats(String token) {
-        Call<List<Contact>> call = webServiceAPI.getChats(token);
-        call.enqueue(new Callback<List<Contact>>() {
-            @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                List<Contact> serverReturn = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
-    }
-    public void postChat(String token, String username) {
-        Call<AddNewContact> call = webServiceAPI.postChat(token,new ContactForCreate(username));
-        call.enqueue(new Callback<AddNewContact>() {
-            @Override
-            public void onResponse(Call<AddNewContact> call, Response<AddNewContact> response) {
-                AddNewContact serverReturn = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<AddNewContact> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
-    }
-
-    public void postMessage(String token, String id, String msg) {
-        Call<ResponseBody> call = webServiceAPI.postMessage(token,id,new messageContent(msg));
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    String serverReturn = response.body().string();
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
+                    String funcUserName = username;
+                    Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
+                    call2.enqueue(new Callback<UserToGet>() {
+                        @Override
+                        public void onResponse(Call<UserToGet> call2, Response<UserToGet> response2) {
+                            UserToGet serverReturn = response2.body();
+                            System.out.println(serverReturn);
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserToGet> call2, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("filed");
+            }
+        });
+
+    }
+
+    public void getChats(String username, String password) {
+
+
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
+                    Call<List<Contact>> call2 = webServiceAPI.getChats(authorizationHeader);
+                    call2.enqueue(new Callback<List<Contact>>() {
+                        @Override
+                        public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
+                            List<Contact> serverReturn = response2.body();
+                            System.out.println(serverReturn);
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Contact>> call2, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    });
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("filed");
+            }
+        });
+
+    }
+
+    public void postChat(String username, String password, String contactName) {
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
+
+                    Call<AddNewContact> call2 = webServiceAPI.postChat(authorizationHeader, new ContactForCreate(contactName));
+                    call2.enqueue(new Callback<AddNewContact>() {
+                        @Override
+                        public void onResponse(Call<AddNewContact> call2, Response<AddNewContact> response2) {
+                            AddNewContact serverReturn = response2.body();
+                            System.out.println(serverReturn);
+                        }
+
+                        @Override
+                        public void onFailure(Call<AddNewContact> call2, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    });
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -135,6 +181,76 @@ public class UsersApiToken {
         });
     }
 
+    public void postMessage(String username, String password, String id, String msg) {
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
 
+                    Call<ResponseBody> call2 = webServiceAPI.postMessage(authorizationHeader, id, new messageContent(msg));
+                    call2.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response2) {
+                            try {
+                                String serverReturn = response2.body().string();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<ResponseBody> call1, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    });
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("filed");
+            }
+        });
+    }
+
+    public void getMessages(String username, String password, String id) {
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
+
+                    Call<List<MessageToGet>> call2 = webServiceAPI.getMessages(authorizationHeader, id);
+                    call2.enqueue(new Callback<List<MessageToGet>>() {
+                        @Override
+                        public void onResponse(Call<List<MessageToGet>> call2, Response<List<MessageToGet>> response2) {
+                            List<MessageToGet> serverReturn = response2.body();
+                            System.out.println(serverReturn);
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<MessageToGet>> call2, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    });
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("filed");
+            }
+        });
+    }
 }
