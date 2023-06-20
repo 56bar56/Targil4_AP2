@@ -20,10 +20,10 @@ public class MainActivity extends AppCompatActivity {
         //room db
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
-
+        postDao.deleteAll();
         //continue
         UsersApiToken user=new UsersApiToken(db, postDao);
-        user.postChat("ofek","o123$","ariel");
+        user.getChats("ofek","o123$");
         setContentView(R.layout.activity_main);
         loginBtn = findViewById(R.id.loginPage);
         registerBtn = findViewById(R.id.registerPage);

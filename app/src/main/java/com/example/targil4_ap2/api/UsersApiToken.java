@@ -118,7 +118,6 @@ public class UsersApiToken {
 
     public void getChats(String username, String password) {
 
-
         Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -146,7 +145,8 @@ public class UsersApiToken {
 
                                 if (!found) {
                                     // Insert new record
-                                    postDao.insert(new DbObject(newData));
+                                    DbObject newObj= new DbObject(newData,null);
+                                    postDao.insert(newObj);
                                 }
                             }
                         }

@@ -11,18 +11,14 @@ import java.util.List;
 
 @Entity
 public class DbObject {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    private long id;
     private Contact contactName;
     private List<MessageToGet> msgList;
 
     public DbObject(Contact contactName, List<MessageToGet> msgList) {
         this.contactName = contactName;
         this.msgList = msgList;
-    }
-
-    public DbObject(Contact contactName) {
-        this.contactName = contactName;
-        this.msgList = null;
     }
 
     public void setContactName(Contact contactName) {
@@ -39,6 +35,13 @@ public class DbObject {
 
     public List<MessageToGet> getMsgList() {
         return msgList;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override
