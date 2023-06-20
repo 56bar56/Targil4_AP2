@@ -5,6 +5,7 @@ import com.example.targil4_ap2.R;
 import com.example.targil4_ap2.items.User;
 import com.example.targil4_ap2.loginInfo;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -30,8 +31,12 @@ public class UsersApiToken {
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    System.out.println("hii2");
-                    String token= response.body().toString();
+                    try {
+                        String token= response.body().string();
+                        System.out.println(token);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 @Override

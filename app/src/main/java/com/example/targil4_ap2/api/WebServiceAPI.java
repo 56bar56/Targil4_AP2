@@ -13,12 +13,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface WebServiceAPI {
-
-    @GET("Users")
-    Call<List<User>> getPosts();
-
     @POST("Tokens")
     Call<ResponseBody> getTokenFromServer(@Body loginInfo info);
+
+    @POST("Users")
+    Call<List<User>> getPosts();
 
     @GET("Users/{id}")
     Call<List<User>> getUser(@Path("id") String id);
