@@ -1,6 +1,6 @@
 package com.example.targil4_ap2.items;
 
-public class ChatForCreate {
+public class ContactForCreate {
     private String username;
 
     public void setUsername(String username) {
@@ -11,7 +11,7 @@ public class ChatForCreate {
         return username;
     }
 
-    public ChatForCreate(String username) {
+    public ContactForCreate(String username) {
         this.username = username;
     }
 }

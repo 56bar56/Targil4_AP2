@@ -1,8 +1,8 @@
 package com.example.targil4_ap2.api;
 
-import com.example.targil4_ap2.items.Chat;
-import com.example.targil4_ap2.items.ChatForCreate;
-import com.example.targil4_ap2.items.ContactToGet;
+import com.example.targil4_ap2.items.Contact;
+import com.example.targil4_ap2.items.ContactForCreate;
+import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
@@ -29,10 +29,10 @@ public interface WebServiceAPI {
     Call<List<UserToGet>> getUser(@Header("authorization") String authorization, @Path("id") String id);
 
     @GET("Chats")
-    Call<List<Chat>> getChats(@Header("authorization") String authorization);
+    Call<List<Contact>> getChats(@Header("authorization") String authorization);
 
     @POST("Chats")
-    Call<ContactToGet> postChat(@Header("authorization") String authorization, @Body ChatForCreate user);
+    Call<AddNewContact> postChat(@Header("authorization") String authorization, @Body ContactForCreate user);
 
     @POST("Chats/{id}/Messages")
     Call<ResponseBody> postMessage(@Header("authorization") String authorization, @Path("id") String id, @Body messageContent mes);

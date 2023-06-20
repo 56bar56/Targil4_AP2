@@ -2,9 +2,9 @@ package com.example.targil4_ap2.api;
 
 import com.example.targil4_ap2.MyApplication;
 import com.example.targil4_ap2.R;
-import com.example.targil4_ap2.items.Chat;
-import com.example.targil4_ap2.items.ChatForCreate;
-import com.example.targil4_ap2.items.ContactToGet;
+import com.example.targil4_ap2.items.Contact;
+import com.example.targil4_ap2.items.ContactForCreate;
+import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
@@ -88,29 +88,29 @@ public class UsersApiToken {
         });
     }
     public void getChats(String token) {
-        Call<List<Chat>> call = webServiceAPI.getChats(token);
-        call.enqueue(new Callback<List<Chat>>() {
+        Call<List<Contact>> call = webServiceAPI.getChats(token);
+        call.enqueue(new Callback<List<Contact>>() {
             @Override
-            public void onResponse(Call<List<Chat>> call, Response<List<Chat>> response) {
-                List<Chat> serverReturn = response.body();
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                List<Contact> serverReturn = response.body();
             }
 
             @Override
-            public void onFailure(Call<List<Chat>> call, Throwable t) {
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
                 System.out.println("filed");
             }
         });
     }
     public void postChat(String token, String username) {
-        Call<ContactToGet> call = webServiceAPI.postChat(token,new ChatForCreate(username));
-        call.enqueue(new Callback<ContactToGet>() {
+        Call<AddNewContact> call = webServiceAPI.postChat(token,new ContactForCreate(username));
+        call.enqueue(new Callback<AddNewContact>() {
             @Override
-            public void onResponse(Call<ContactToGet> call, Response<ContactToGet> response) {
-                ContactToGet serverReturn = response.body();
+            public void onResponse(Call<AddNewContact> call, Response<AddNewContact> response) {
+                AddNewContact serverReturn = response.body();
             }
 
             @Override
-            public void onFailure(Call<ContactToGet> call, Throwable t) {
+            public void onFailure(Call<AddNewContact> call, Throwable t) {
                 System.out.println("filed");
             }
         });

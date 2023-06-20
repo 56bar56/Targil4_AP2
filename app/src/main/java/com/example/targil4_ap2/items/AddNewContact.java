@@ -1,9 +1,8 @@
 package com.example.targil4_ap2.items;
 
-public class Chat {
+public class AddNewContact {
     private int id;
     private UserToGet user;
-    private MessageLast lastMessage;
 
     public void setId(int id) {
         this.id = id;
@@ -11,10 +10,6 @@ public class Chat {
 
     public void setUser(UserToGet user) {
         this.user = user;
-    }
-
-    public void setLastMessage(MessageLast lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     public int getId() {
@@ -25,13 +20,9 @@ public class Chat {
         return user;
     }
 
-    public MessageLast getLastMessage() {
-        return lastMessage;
-    }
-
-    public Chat(int id, UserToGet user, MessageLast lastMessage) {
+    public AddNewContact(int id, UserToGet user) {
         this.id = id;
         this.user = user;
-        this.lastMessage = lastMessage;
     }
+
 }
