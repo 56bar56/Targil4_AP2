@@ -1,6 +1,9 @@
 package com.example.targil4_ap2.api;
 
+import com.example.targil4_ap2.AppDB;
+import com.example.targil4_ap2.DbObject;
 import com.example.targil4_ap2.MyApplication;
+import com.example.targil4_ap2.PostDao;
 import com.example.targil4_ap2.R;
 import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.Contact;
@@ -24,14 +27,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UsersApiToken {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
+    private AppDB DB;
+    private PostDao postDao;
 
-    public UsersApiToken() {
+    public UsersApiToken(AppDB DB, PostDao postDao) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
-
+        this.DB = DB;
+        this.postDao = postDao;
     }
 
     public void getToken(String username, String password) {
@@ -125,7 +131,24 @@ public class UsersApiToken {
                         @Override
                         public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
                             List<Contact> serverReturn = response2.body();
-                            System.out.println(serverReturn);
+                            //creat a dcObject for the inseration
+                            List<DbObject> existingData = postDao.index();  // Retrieve existing data from the database
+
+                            for (Contact newData : serverReturn) {
+                                boolean found = false;
+
+                                for (DbObject existingRecord : existingData) {
+                                    if (newData.getUser().getUsername().equals(existingRecord.getContactName().getUser().getUsername())) {  // Compare using unique identifier
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found) {
+                                    // Insert new record
+                                    postDao.insert(new DbObject(newData));
+                                }
+                            }
                         }
 
                         @Override
