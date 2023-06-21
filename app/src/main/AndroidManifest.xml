@@ -18,7 +18,7 @@
             android:name=".registerPage"
             android:exported="false" />
         <activity
-            android:name=".chats_pageActivity"
+            android:name=".contacts_pageActivity"
             android:exported="false" />
         <activity
             android:name=".loginActivity"

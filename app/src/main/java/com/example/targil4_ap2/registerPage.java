@@ -21,7 +21,7 @@ public class registerPage extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), chats_pageActivity.class));
+                startActivity(new Intent(getApplicationContext(), contacts_pageActivity.class));
             }
         });
         toLogIn.setOnClickListener(new View.OnClickListener() {
