@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -63,9 +64,10 @@ public class registerPage extends AppCompatActivity {
                 //להוסיף שם פרופיל ותמונה
                 String profileName = "prof";
                 String profilePic = "";
-
+                String errorMsg="";
                 if (password.length() > 16 || password.length() < 4) {
                     informationOk = false;
+                    errorMsg+="Password is not valid\n";
                 } else {
                     boolean have$ = false;
                     boolean haveNum = false;
@@ -87,23 +89,22 @@ public class registerPage extends AppCompatActivity {
                     }
                     if (!have$ || !haveNum || !haveLet || haveEmpjy) {
                         informationOk = false;
-                        //do when password isnt ok
+                        errorMsg+="Password is not valid\n";
                     }
                 }
                 if(username.isEmpty()) {
                     informationOk = false;
-
-                }
-                if(email.isEmpty()) {
-                    informationOk = false;
-
+                    errorMsg+="Username is not valid\n";
                 }
                 if(profileName.isEmpty()) {
                     informationOk = false;
+                    errorMsg+="profileName is not valid\n";
+
                 }
                 String regex3 = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
                 if (!email.matches(regex3)) {
                     informationOk = false;
+                    errorMsg+="email is not valid\n";
                 }
 
                 if (informationOk) {
@@ -111,14 +112,12 @@ public class registerPage extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
-                                String serverReturn = response.body().string();
-                                if (serverReturn == "") {
-                                    chatsPageAfterRegister(username, password);
-                                } else {
-                                    /**
-                                     * in case we have this username already
-                                     */
+                                if(!response.isSuccessful()) {
+                                    Toast.makeText(registerPage.this, "This user name is already used", Toast.LENGTH_LONG).show();
                                 }
+                                String serverReturn = response.body().string();
+                                    chatsPageAfterRegister(username, password);
+
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -126,11 +125,12 @@ public class registerPage extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            System.out.println("filed");
-                            //בעיה עם השרת
+                            Toast.makeText(registerPage.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
                         }
                     };
                     user.postUser(new UserToPost(username, password, profileName, profilePic), callbackForPostUser);
+                } else {
+                    Toast.makeText(registerPage.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -168,8 +168,7 @@ public class registerPage extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<UserToGet> call2, Throwable t) {
-                            //כשלנו בלקבל את פרטי היוזר
-                            System.out.println("filed");
+                            Toast.makeText(registerPage.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
                         }
                     });
                 } catch (IOException e) {
@@ -179,7 +178,7 @@ public class registerPage extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("filed in get token");
+                Toast.makeText(registerPage.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
             }
         };
         user.getUser(username, password, callbackForGetUserInfo);

@@ -64,7 +64,7 @@ public class loginActivity extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
                                 if (!response.isSuccessful()) {
-                                    Toast.makeText(loginActivity.this, "Incorrect username and/or password", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(loginActivity.this, "Incorrect username and/or password", Toast.LENGTH_LONG).show();
                                 } else {
                                     String token = response.body().string();
                                     String authorizationHeader = "Bearer " + token;
@@ -85,7 +85,7 @@ public class loginActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<UserToGet> call2, Throwable t) {
-                                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
 
                                         }
                                     });
@@ -97,7 +97,7 @@ public class loginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
                         }
                     };
                     user.getUser(username, password, callbackForGetUserInfo);
