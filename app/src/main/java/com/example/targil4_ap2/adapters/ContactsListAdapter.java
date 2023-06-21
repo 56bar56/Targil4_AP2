@@ -14,6 +14,7 @@ import com.example.targil4_ap2.items.Contact;
 
 import java.util.List;
 
+
 public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapter.ContactViewHolder> {
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
@@ -31,6 +32,8 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
     private final LayoutInflater mInflater;
     private List<Contact> contacts;
+    private OnContactClickListener contactClickListener;
+
 
     public ContactsListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -53,6 +56,16 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             //holder.profileImg.setImageResource(resourceId);
             int resourceId = holder.itemView.getContext().getResources().getIdentifier("messi", "drawable", holder.itemView.getContext().getPackageName());
             holder.profileImg.setImageResource(resourceId);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (contactClickListener != null) {
+                        contactClickListener.onContactClick(current);
+                    }
+                }
+            });
+
         }
     }
 
@@ -70,6 +83,14 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
     public List<Contact> getContacts() {
         return contacts;
+    }
+
+    public void setOnContactClickListener(OnContactClickListener listener) {
+        contactClickListener = listener;
+    }
+
+    public interface OnContactClickListener {
+        void onContactClick(Contact contact);
     }
 
 }

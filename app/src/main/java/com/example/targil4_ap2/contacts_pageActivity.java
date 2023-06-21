@@ -1,5 +1,6 @@
 package com.example.targil4_ap2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,6 +19,8 @@ import java.util.List;
 
 public class contacts_pageActivity extends AppCompatActivity {
     private FloatingActionButton btnAdd;
+    private FloatingActionButton btnLogout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +53,41 @@ public class contacts_pageActivity extends AppCompatActivity {
         contacts.add(new Contact("6", u6, m6));
         adapter.setContacts(contacts);
 
+        adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
+            @Override
+            public void onContactClick(Contact contact) {
+                // Handle the click event for the contact item
+                // Start the chat activity
+                Intent intent = new Intent(getApplicationContext(), chatActivity.class);
+
+                // Pass any necessary data to the chat activity using intent extras
+                intent.putExtra("contactId", contact.getId());
+                intent.putExtra("contactName", contact.getUser().getDisplayName());
+                intent.putExtra("contactImg", contact.getUser().getProfilePic());
+                startActivity(intent);
+            }
+        });
 
         btnAdd= findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //to hadd new activity in order to
+                Intent intentAddCon = new Intent(getApplicationContext(), ChooseConNameActivity.class);
+                //intent.putExtra("username", contact.getId());
+                //intent.putExtra("password", contact.getId());
+
+                startActivity(intentAddCon);
             }
         });
+
+        btnLogout= findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
 }
