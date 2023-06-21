@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -33,17 +34,18 @@ public class loginActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
     private UsersApiToken user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         loginBtn = findViewById(R.id.logInBtn);
         toRegister = findViewById(R.id.noAccount);
-        editLoginUsername=findViewById(R.id.LoginUsername);
-        editLoginPassword=findViewById(R.id.LoginPassword);
+        editLoginUsername = findViewById(R.id.LoginUsername);
+        editLoginPassword = findViewById(R.id.LoginPassword);
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
-        user=new UsersApiToken(db,postDao);
+        user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
                 .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -52,39 +54,42 @@ public class loginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username=editLoginUsername.getText().toString();
-                String password=editLoginPassword.getText().toString();
-                if(username.isEmpty()||password.isEmpty()) {
+                String username = editLoginUsername.getText().toString();
+                String password = editLoginPassword.getText().toString();
+                if (username.isEmpty() || password.isEmpty()) {
                     //is empty
                 } else {
-                    Callback<ResponseBody> callbackForGetUserInfo= new Callback<ResponseBody>() {
+                    Callback<ResponseBody> callbackForGetUserInfo = new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
-                                String token = response.body().string();
-                                //להוסיף בדיקה אם תוקן מתאים
-                                String authorizationHeader = "Bearer " + token;
-                                String funcUserName = username;
-                                Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
-                                call2.enqueue(new Callback<UserToGet>() {
-                                    @Override
-                                    public void onResponse(Call<UserToGet> call2, Response<UserToGet> response2) {
-                                        UserToGet serverReturn = response2.body();
-                                        Intent intent= new Intent(getApplicationContext(), contacts_pageActivity.class);
-                                        intent.putExtra("username",serverReturn.getUsername());
-                                        intent.putExtra("displayName",serverReturn.getDisplayName());
-                                        intent.putExtra("profilePic",serverReturn.getProfilePic());
-                                        intent.putExtra("password",password);
+                                if (!response.isSuccessful()) {
+                                    Toast.makeText(loginActivity.this, "Incorrect username and/or password", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String token = response.body().string();
+                                    String authorizationHeader = "Bearer " + token;
+                                    String funcUserName = username;
+                                    Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
+                                    call2.enqueue(new Callback<UserToGet>() {
+                                        @Override
+                                        public void onResponse(Call<UserToGet> call2, Response<UserToGet> response2) {
+                                            UserToGet serverReturn = response2.body();
+                                            Intent intent = new Intent(getApplicationContext(), contacts_pageActivity.class);
+                                            intent.putExtra("username", serverReturn.getUsername());
+                                            intent.putExtra("displayName", serverReturn.getDisplayName());
+                                            intent.putExtra("profilePic", serverReturn.getProfilePic());
+                                            intent.putExtra("password", password);
 
-                                        startActivity(intent);
-                                    }
+                                            startActivity(intent);
+                                        }
 
-                                    @Override
-                                    public void onFailure(Call<UserToGet> call2, Throwable t) {
-                                        //כשלנו בלקבל את פרטי היוזר
-                                        System.out.println("filed");
-                                    }
-                                });
+                                        @Override
+                                        public void onFailure(Call<UserToGet> call2, Throwable t) {
+                                            //כשלנו בלקבל את פרטי היוזר
+                                            System.out.println("filed");
+                                        }
+                                    });
+                                }
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -95,7 +100,7 @@ public class loginActivity extends AppCompatActivity {
                             System.out.println("filed in get token");
                         }
                     };
-                    user.getUser(username,password,callbackForGetUserInfo);
+                    user.getUser(username, password, callbackForGetUserInfo);
                 }
             }
         });
