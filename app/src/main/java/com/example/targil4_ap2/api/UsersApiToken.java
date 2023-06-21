@@ -59,24 +59,9 @@ public class UsersApiToken {
         });
     }
 
-    public void postUser(UserToPost user) {
+    public void postUser(UserToPost user,Callback<ResponseBody> callback ) {
         Call<ResponseBody> call = webServiceAPI.postUser(user);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String serverReturn = response.body().string();
-                    System.out.println(serverReturn);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
+        call.enqueue(callback);
     }
 
     public void getUser(String username, String password,Callback<ResponseBody> callback ) {

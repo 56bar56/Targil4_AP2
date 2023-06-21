@@ -1,6 +1,7 @@
 package com.example.targil4_ap2;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,11 +11,13 @@ import com.example.targil4_ap2.adapters.ContactsListAdapter;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageLast;
 import com.example.targil4_ap2.items.UserToGet;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class contacts_pageActivity extends AppCompatActivity {
+    private FloatingActionButton btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,5 +49,14 @@ public class contacts_pageActivity extends AppCompatActivity {
         MessageLast m6 = new MessageLast("1", "04/03/23", "hi");
         contacts.add(new Contact("6", u6, m6));
         adapter.setContacts(contacts);
+
+
+        btnAdd= findViewById(R.id.btnAdd);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //to hadd new activity in order to
+            }
+        });
     }
 }
