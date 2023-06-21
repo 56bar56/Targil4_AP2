@@ -125,12 +125,12 @@ public class registerPage extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(registerPage.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
+                            Toast.makeText(registerPage.this, "problem with connecting to the server", Toast.LENGTH_LONG).show(); //error message for server
                         }
                     };
                     user.postUser(new UserToPost(username, password, profileName, profilePic), callbackForPostUser);
                 } else {
-                    Toast.makeText(registerPage.this, errorMsg, Toast.LENGTH_LONG).show();
+                    Toast.makeText(registerPage.this, errorMsg, Toast.LENGTH_LONG).show();//error message
                 }
 
             }
@@ -149,7 +149,6 @@ public class registerPage extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String token = response.body().string();
-                    //להוסיף בדיקה אם תוקן מתאים
                     String authorizationHeader = "Bearer " + token;
                     String funcUserName = username;
                     Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);

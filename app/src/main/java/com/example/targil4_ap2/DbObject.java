@@ -16,7 +16,7 @@ public class DbObject {
     private Contact contactName;
     private List<MessageToGet> msgList;
 
-    public DbObject(Contact contactName, List<MessageToGet> msgList) {
+    public DbObject( Contact contactName, List<MessageToGet> msgList) {
         this.contactName = contactName;
         this.msgList = msgList;
     }

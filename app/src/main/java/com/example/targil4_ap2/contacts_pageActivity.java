@@ -80,9 +80,10 @@ public class contacts_pageActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent thisIntent= getIntent();
                 Intent intentAddCon = new Intent(getApplicationContext(), ChooseConNameActivity.class);
-                //intent.putExtra("username", contact.getId());
-                //intent.putExtra("password", contact.getId());
+                intentAddCon.putExtra("username", thisIntent.getStringExtra("username"));
+                intentAddCon.putExtra("password", thisIntent.getStringExtra("password"));
 
                 startActivity(intentAddCon);
             }
