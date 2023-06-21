@@ -52,6 +52,14 @@ public class contacts_pageActivity extends AppCompatActivity {
         MessageLast m6 = new MessageLast("1", "04/03/23", "hi");
         contacts.add(new Contact("6", u6, m6));
         adapter.setContacts(contacts);
+        UserToGet u7 = new UserToGet("Haimon", "Haimon", "1");
+        MessageLast m7 = new MessageLast("1", "04/07/23", "hi");
+        contacts.add(new Contact("7", u7, m7));
+        adapter.setContacts(contacts);
+        UserToGet u8 = new UserToGet("Efrat", "foodi", "1");
+        MessageLast m8 = new MessageLast("1", "30/05/23", "hi");
+        contacts.add(new Contact("8", u8, m8));
+        adapter.setContacts(contacts);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
             @Override
