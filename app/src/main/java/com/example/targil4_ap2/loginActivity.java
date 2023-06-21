@@ -85,8 +85,8 @@ public class loginActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<UserToGet> call2, Throwable t) {
-                                            //כשלנו בלקבל את פרטי היוזר
-                                            System.out.println("filed");
+                                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_SHORT).show();
+
                                         }
                                     });
                                 }
@@ -97,7 +97,7 @@ public class loginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            System.out.println("filed in get token");
+                            Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_SHORT).show();
                         }
                     };
                     user.getUser(username, password, callbackForGetUserInfo);
