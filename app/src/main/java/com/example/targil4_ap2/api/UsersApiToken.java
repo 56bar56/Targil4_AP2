@@ -123,38 +123,9 @@ public class UsersApiToken {
 
     }
 
-    public void postChat(String username, String password, String contactName) {
+    public void postChat(String username, String password, Callback<ResponseBody> callback) {
         Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String token = response.body().string();
-                    String authorizationHeader = "Bearer " + token;
-
-                    Call<AddNewContact> call2 = webServiceAPI.postChat(authorizationHeader, new ContactForCreate(contactName));
-                    call2.enqueue(new Callback<AddNewContact>() {
-                        @Override
-                        public void onResponse(Call<AddNewContact> call2, Response<AddNewContact> response2) {
-                            AddNewContact serverReturn = response2.body();
-                            System.out.println(serverReturn);
-                        }
-
-                        @Override
-                        public void onFailure(Call<AddNewContact> call2, Throwable t) {
-                            System.out.println("filed");
-                        }
-                    });
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
+        call.enqueue(callback);
     }
 
     public void postMessage(String username, String password, String id, String msg) {
