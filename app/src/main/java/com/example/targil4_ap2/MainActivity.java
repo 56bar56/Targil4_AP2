@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         postDao.deleteAll();
         //continue
         UsersApiToken user=new UsersApiToken(db, postDao);
-        user.getChats("ofek","o123$");
+        user.postMessage("ofek","o123$","6491f2ed88c63c3e60b5d187","android rule");
         setContentView(R.layout.activity_main);
         loginBtn = findViewById(R.id.loginPage);
         registerBtn = findViewById(R.id.registerPage);

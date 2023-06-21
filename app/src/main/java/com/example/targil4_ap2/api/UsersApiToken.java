@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UsersApiToken {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
-    private AppDB DB;
+    private AppDB db;
     private PostDao postDao;
 
     public UsersApiToken(AppDB DB, PostDao postDao) {
@@ -36,7 +36,7 @@ public class UsersApiToken {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
-        this.DB = DB;
+        this.db = DB;
         this.postDao = postDao;
     }
 
@@ -219,6 +219,7 @@ public class UsersApiToken {
                         public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response2) {
                             try {
                                 String serverReturn = response2.body().string();
+                                System.out.println(serverReturn);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
