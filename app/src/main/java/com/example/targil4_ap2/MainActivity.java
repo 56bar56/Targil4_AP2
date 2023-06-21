@@ -6,9 +6,6 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
-
-import com.example.targil4_ap2.api.UsersApiToken;
 
 public class MainActivity extends AppCompatActivity {
     Button loginBtn, registerBtn;
@@ -18,12 +15,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //room db
-        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
+      /*  db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
         postDao.deleteAll();
         //continue
         UsersApiToken user=new UsersApiToken(db, postDao);
-        user.postMessage("ofek","o123$","6491f2ed88c63c3e60b5d187","android rule");
+        user.getChats("ofek","o123$");*/
         setContentView(R.layout.activity_main);
         loginBtn = findViewById(R.id.loginPage);
         registerBtn = findViewById(R.id.registerPage);

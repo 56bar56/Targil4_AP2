@@ -59,6 +59,7 @@
         app:backgroundTint="@null" />
 
     <EditText
+        android:id="@+id/registerUsername"
         android:layout_width="209dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
@@ -69,6 +70,7 @@
         android:textColor="@color/white"/>
 
     <EditText
+        android:id="@+id/registerPassword"
         android:layout_width="209dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
@@ -79,6 +81,7 @@
         android:textColor="@color/white" />
 
     <EditText
+        android:id="@+id/registerEmail"
         android:layout_width="209dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"

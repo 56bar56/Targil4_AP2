@@ -9,7 +9,6 @@ import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.ContactForCreate;
 import com.example.targil4_ap2.items.MessageToGet;
-import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
 import com.example.targil4_ap2.loginInfo;
@@ -80,40 +79,9 @@ public class UsersApiToken {
         });
     }
 
-    public void getUser(String username, String password) {
-
+    public void getUser(String username, String password,Callback<ResponseBody> callback ) {
         Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String token = response.body().string();
-                    String authorizationHeader = "Bearer " + token;
-                    String funcUserName = username;
-                    Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
-                    call2.enqueue(new Callback<UserToGet>() {
-                        @Override
-                        public void onResponse(Call<UserToGet> call2, Response<UserToGet> response2) {
-                            UserToGet serverReturn = response2.body();
-                            System.out.println(serverReturn);
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserToGet> call2, Throwable t) {
-                            System.out.println("filed");
-                        }
-                    });
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("filed");
-            }
-        });
-
+        call.enqueue(callback);
     }
 
     public void getChats(String username, String password) {
