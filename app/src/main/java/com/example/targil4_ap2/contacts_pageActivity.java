@@ -27,6 +27,15 @@ public class contacts_pageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_page);
 
+        Intent intent = getIntent();
+
+        // Retrieve the values from the intent extras
+        String username = intent.getStringExtra("username");
+        String displayName = intent.getStringExtra("displayName");
+        String profilePic = intent.getStringExtra("profilePic");
+        String password = intent.getStringExtra("password");
+
+
         RecyclerView lstContacts = findViewById(R.id.lstContacts);
         final ContactsListAdapter adapter = new ContactsListAdapter(this);
         lstContacts.setAdapter(adapter);

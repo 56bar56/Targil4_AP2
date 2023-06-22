@@ -11,8 +11,8 @@ import java.util.List;
 
 @Entity
 public class DbObject {
-    @PrimaryKey
-    private long id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private Contact contactName;
     private List<MessageToGet> msgList;
 
@@ -36,11 +36,11 @@ public class DbObject {
     public List<MessageToGet> getMsgList() {
         return msgList;
     }
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

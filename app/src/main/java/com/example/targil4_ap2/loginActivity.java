@@ -79,6 +79,9 @@ public class loginActivity extends AppCompatActivity {
                                             intent.putExtra("displayName", serverReturn.getDisplayName());
                                             intent.putExtra("profilePic", serverReturn.getProfilePic());
                                             intent.putExtra("password", password);
+                                            //now we need to get the information out of the server
+
+                                            //////////////////////////////////////////////////////
 
                                             startActivity(intent);
                                         }

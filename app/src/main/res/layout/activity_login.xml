@@ -66,7 +66,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="98dp"
         android:layout_marginBottom="516dp"
-        android:text="username"
+        android:hint="username"
         android:textColor="@color/white"/>
 
     <EditText
@@ -77,6 +77,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="98dp"
         android:layout_marginBottom="443dp"
-        android:text="password"
+        android:hint="password"
         android:textColor="@color/white" />
 </RelativeLayout>
