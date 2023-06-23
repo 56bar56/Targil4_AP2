@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.targil4_ap2.adapters.ContactsListAdapter;
 import com.example.targil4_ap2.items.Contact;
@@ -20,6 +21,8 @@ import java.util.List;
 public class contacts_pageActivity extends AppCompatActivity {
     private FloatingActionButton btnAdd;
     private FloatingActionButton btnLogout;
+    private AppDB db;
+    private PostDao postDao;
 
 
     @Override
@@ -68,7 +71,16 @@ public class contacts_pageActivity extends AppCompatActivity {
         UserToGet u8 = new UserToGet("Efrat", "foodi", "1");
         MessageLast m8 = new MessageLast("1", "30/05/23", "hi");
         contacts.add(new Contact("8", u8, m8));
-        adapter.setContacts(contacts);
+
+        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
+        postDao = db.postDao();
+        List<DbObject> DbObj = postDao.index();
+        List<Contact> chats = new ArrayList<>();
+        for(int i = 0; i < DbObj.size(); i++){
+            Contact con = DbObj.get(i).getContactName();
+            chats.add(con);
+        }
+        adapter.setContacts(chats);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
             @Override

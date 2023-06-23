@@ -1,6 +1,6 @@
 package com.example.targil4_ap2.items;
 
-public class Contact {
+public class Contact{
     private String id;
     private UserToGet user;
     private MessageLast lastMessage;

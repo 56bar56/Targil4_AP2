@@ -13,9 +13,11 @@ import androidx.room.Room;
 
 import com.example.targil4_ap2.api.UsersApiToken;
 import com.example.targil4_ap2.api.WebServiceAPI;
+import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.UserToGet;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -82,8 +84,8 @@ public class loginActivity extends AppCompatActivity {
                                             //now we need to get the information out of the server
 
                                             //////////////////////////////////////////////////////
-
-                                            startActivity(intent);
+                                            dbInfo(intent, username, password);
+                                            //startActivity(intent);
                                         }
 
                                         @Override
@@ -113,5 +115,62 @@ public class loginActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), registerPage.class));
             }
         });
+    }
+    public void dbInfo(Intent intent, String username, String password) {
+        Callback<ResponseBody> callbackForGetUserChatsInfo = new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(loginActivity.this, "Incorrect username and/or password", Toast.LENGTH_LONG).show();
+                    } else {
+                        String token = response.body().string();
+                        String authorizationHeader = "Bearer " + token;
+                        Call<List<Contact>> call2 = webServiceAPI.getChats(authorizationHeader);
+                        call2.enqueue(new Callback<List<Contact>>() {
+                            @Override
+                            public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
+                                postDao.deleteAll();
+                                List<Contact> serverReturn = response2.body();
+                                //creat a dcObject for the inseration
+                                List<DbObject> existingData = postDao.index();  // Retrieve existing data from the database
+                                for (Contact newData : serverReturn) {
+                                    boolean found = false;
+
+                                    for (DbObject existingRecord : existingData) {
+                                        if (newData.getUser().getUsername().equals(existingRecord.getContactName().getUser().getUsername())) {  // Compare using unique identifier
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!found) {
+                                        // Insert new record
+                                        DbObject newObj = new DbObject(newData, null);
+                                        postDao.insert(newObj);
+                                    }
+                                }
+                                List<DbObject> check = postDao.index();  // Retrieve existing data from the database
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Contact>> call2, Throwable t) {
+                                Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
+            }
+        };
+        user.getChats(username, password, callbackForGetUserChatsInfo);
     }
 }
