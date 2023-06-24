@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.targil4_ap2.adapters.MessagesListAdapter;
 import com.example.targil4_ap2.items.MessageToGet;
@@ -23,6 +24,8 @@ public class chatActivity extends AppCompatActivity {
     private FloatingActionButton btnBack;
     private ImageView profileImg;
     private TextView displayName;
+    private AppDB db;
+    private PostDao postDao;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +91,27 @@ public class chatActivity extends AppCompatActivity {
         SenderName s11 = new SenderName(contactName);
         MessageToGet m11 = new MessageToGet("11", "21:05", "i see u!", s11);
         messages.add(m11);
-        adapter.setMessages(messages);
+
+
+        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
+        postDao = db.postDao();
+        List<DbObject> DbObj = postDao.index();
+        List<MessageToGet> msgs = new ArrayList<>();
+        int index = -1;
+        for(int i = 0; i < DbObj.size(); i++){
+            if(contactName.equals(DbObj.get(i).getContactName().getUser().getDisplayName())){
+                index = i;
+            }
+        }
+        /*
+        for(int i=0; i < DbObj.get(index).getMsgList().size(); i++){
+            msgs.set(i, DbObj.get(index).getMsgList().get(i));
+        }
+        */
+        msgs = DbObj.get(index).getMsgList();
+
+        adapter.setMessages(msgs);
+
 
         // Makes sure to show it from the latest message
         int lastPosition = messages.size() - 1;
