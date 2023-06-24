@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/tvChatRoom"
-        android:layout_width="408dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="30dp"
         android:background="#74CFA0"

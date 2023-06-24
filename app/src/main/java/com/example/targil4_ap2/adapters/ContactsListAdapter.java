@@ -54,6 +54,7 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             //String profilePicName = current.getUser().getProfilePic();
             //int resourceId = holder.itemView.getContext().getResources().getIdentifier(profilePicName, "drawable", holder.itemView.getContext().getPackageName());
             //holder.profileImg.setImageResource(resourceId);
+            //TODO change to the user img
             int resourceId = holder.itemView.getContext().getResources().getIdentifier("messi", "drawable", holder.itemView.getContext().getPackageName());
             holder.profileImg.setImageResource(resourceId);
 

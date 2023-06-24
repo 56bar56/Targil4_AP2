@@ -7,12 +7,12 @@
     android:clickable="true">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profileImg"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/circular_background"/>
+        android:src="@drawable/profile_img"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="289dp"

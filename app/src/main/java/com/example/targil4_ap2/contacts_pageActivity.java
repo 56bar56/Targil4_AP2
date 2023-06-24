@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.example.targil4_ap2.adapters.ContactsListAdapter;
 import com.example.targil4_ap2.items.Contact;
@@ -21,9 +20,25 @@ import java.util.List;
 public class contacts_pageActivity extends AppCompatActivity {
     private FloatingActionButton btnAdd;
     private FloatingActionButton btnLogout;
+    private List<Contact> contacts;
     private AppDB db;
     private PostDao postDao;
 
+    /**
+     * Function get userename that you just send him a meesage or got message by him, and get it the
+     * top of the contact list.
+     * @param username
+     */
+    public void moveContactToFirst(String username) {
+        for (int i = 0; i < contacts.size(); i++) {
+            Contact contact = contacts.get(i);
+            if (contact.getUser().equals(username)) {
+                contacts.remove(i);
+                contacts.add(0, contact);
+                break;
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +59,7 @@ public class contacts_pageActivity extends AppCompatActivity {
         lstContacts.setAdapter(adapter);
         lstContacts.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Contact> contacts = new ArrayList<>();
+        contacts = new ArrayList<>();
         UserToGet u1 = new UserToGet("ariel", "osCAR", "1");
         MessageLast m1 = new MessageLast("1", "12/06/23", "hi");
         contacts.add(new Contact("1", u1, m1));
@@ -72,6 +87,7 @@ public class contacts_pageActivity extends AppCompatActivity {
         MessageLast m8 = new MessageLast("1", "30/05/23", "hi");
         contacts.add(new Contact("8", u8, m8));
 
+        /*
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
         List<DbObject> DbObj = postDao.index();
@@ -80,7 +96,8 @@ public class contacts_pageActivity extends AppCompatActivity {
             Contact con = DbObj.get(i).getContactName();
             chats.add(con);
         }
-        adapter.setContacts(chats);
+         */
+        adapter.setContacts(contacts);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
             @Override

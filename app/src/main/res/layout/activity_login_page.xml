@@ -18,7 +18,7 @@
         android:layout_marginTop="39dp"
         android:layout_marginEnd="77dp"
         android:layout_marginBottom="30dp"
-        android:text="REGISTER"
+        android:text="LOGIN"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textColor="#7D635B"
@@ -33,10 +33,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="33dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="634dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="27dp"
         android:text="already has an account? press here"
         android:textAlignment="center"
         android:textColor="#543734"
@@ -44,7 +44,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/logInBtn"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -52,43 +52,29 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="77dp"
-        android:layout_marginTop="444dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginTop="389dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="203dp"
         android:background="@android:color/transparent"
-        android:text="sign up"
+        android:text="sign in"
         android:textColor="#7D635B"
         android:textSize="40dp"
         app:backgroundTint="@null" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/registerProfileImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="158dp"
-        android:layout_marginBottom="510dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="onProfileImageClicked"
-        android:scaleType="centerCrop"
-        android:src="@drawable/profile_img" />
 
     <LinearLayout
         android:layout_width="287dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="63dp"
-        android:layout_marginBottom="273dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="403dp"
         android:background="@drawable/login_edittext"
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/registerUsername"
+            android:id="@+id/LoginUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
@@ -98,31 +84,9 @@
             android:textColorHint="@color/white" />
 
         <EditText
-            android:id="@+id/registerPassword"
+            android:id="@+id/LoginPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:hint="password"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
-
-        <EditText
-            android:id="@+id/registerEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:hint="password"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
-
-        <EditText
-            android:id="@+id/registerDisplayName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"

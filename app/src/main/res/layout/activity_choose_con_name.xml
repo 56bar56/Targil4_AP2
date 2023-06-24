@@ -2,7 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:background="#FFFEFA">
+
+    <TextView
+        android:id="@+id/tvChatRoom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="30dp"
+        android:background="#74CFA0"
+        android:text="Chat Room"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="#F7F1AE"
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/editNewConName"
