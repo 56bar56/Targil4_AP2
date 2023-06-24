@@ -153,7 +153,7 @@ public class loginActivity extends AppCompatActivity {
                                     }
                                 }
                                 List<DbObject> check = postDao.index();  // Retrieve existing data from the database
-                                getAllMessages(username,password);
+                                getAllMessagesForLogin(username,password);
                                 startActivity(intent);
                             }
 
@@ -178,7 +178,7 @@ public class loginActivity extends AppCompatActivity {
     }
 
 
-    public void getAllMessages(String userName, String password) {
+    public void getAllMessagesForLogin(String userName, String password) {
         Callback<ResponseBody> getAllMessagesCallback =new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
