@@ -81,6 +81,7 @@ public class ChooseConNameActivity extends AppCompatActivity {
                                         } else {
                                             AddNewContact serverReturn = response2.body();
                                             PutContactsInDb(intentFromChats.getStringExtra("username"), intentFromChats.getStringExtra("password")); //call to the function that get all contacts from the server into our db
+                                            //startActivity(new Intent(getApplicationContext(), contacts_pageActivity.class));
                                         }
 
                                     }
@@ -150,6 +151,7 @@ public class ChooseConNameActivity extends AppCompatActivity {
                                     postDao.insert(newObj);
                                 }
                             }
+                            finish();
                         }
 
                         @Override

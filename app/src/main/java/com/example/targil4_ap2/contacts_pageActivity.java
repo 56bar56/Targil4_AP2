@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.targil4_ap2.adapters.ContactsListAdapter;
 import com.example.targil4_ap2.items.Contact;
@@ -23,6 +24,7 @@ public class contacts_pageActivity extends AppCompatActivity {
     private List<Contact> contacts;
     private AppDB db;
     private PostDao postDao;
+    private ContactsListAdapter adapter;
 
     /**
      * Function get userename that you just send him a meesage or got message by him, and get it the
@@ -55,7 +57,7 @@ public class contacts_pageActivity extends AppCompatActivity {
 
 
         RecyclerView lstContacts = findViewById(R.id.lstContacts);
-        final ContactsListAdapter adapter = new ContactsListAdapter(this);
+        adapter = new ContactsListAdapter(this);
         lstContacts.setAdapter(adapter);
         lstContacts.setLayoutManager(new LinearLayoutManager(this));
 
@@ -87,16 +89,18 @@ public class contacts_pageActivity extends AppCompatActivity {
         MessageLast m8 = new MessageLast("1", "30/05/23", "hi");
         contacts.add(new Contact("8", u8, m8));
 
-        /*
+
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
         List<DbObject> DbObj = postDao.index();
         List<Contact> chats = new ArrayList<>();
         for(int i = 0; i < DbObj.size(); i++){
             Contact con = DbObj.get(i).getContactName();
+            if(con.getLastMessage() == null){
+                con.setLastMessage(new MessageLast("", "", ""));
+            }
             chats.add(con);
         }
-         */
         adapter.setContacts(contacts);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
@@ -134,7 +138,20 @@ public class contacts_pageActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<DbObject> DbObj = postDao.index();
+        List<Contact> chats = new ArrayList<>();
+        for(int i = 0; i < DbObj.size(); i++){
+            Contact con = DbObj.get(i).getContactName();
+            if(con.getLastMessage() == null){
+                con.setLastMessage(new MessageLast("", "", ""));
+            }
+            chats.add(con);
+        }
+        adapter.setContacts(chats);
     }
 }

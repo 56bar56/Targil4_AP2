@@ -31,7 +31,7 @@ public class chatActivity extends AppCompatActivity {
         // Retrieve the extras from the intent
         Intent intent = getIntent();
         String contactId = intent.getStringExtra("contactId");
-        String contactUsername = intent.getStringExtra("contactUsername");
+        //String contactUsername = intent.getStringExtra("contactUsername");
         String contactName = intent.getStringExtra("contactName");
         String contactImg = intent.getStringExtra("contactImg");
 
@@ -55,25 +55,25 @@ public class chatActivity extends AppCompatActivity {
 
 
         List<MessageToGet> messages = new ArrayList<>();
-        SenderName s1 = new SenderName("username");
+        SenderName s1 = new SenderName(contactName);
         MessageToGet m1 = new MessageToGet("1", "15:55", "hello", s1);
         messages.add(m1);
         SenderName s2 = new SenderName("username");
         MessageToGet m2 = new MessageToGet("2", "16:05", "how are u??", s2);
         messages.add(m2);
-        SenderName s3 = new SenderName(contactUsername);
+        SenderName s3 = new SenderName(contactName);
         MessageToGet m3 = new MessageToGet("3", "18:05", "Hi, i'm good. how u doing bro?", s3);
         messages.add(m3);
         SenderName s4 = new SenderName("username");
         MessageToGet m4 = new MessageToGet("4", "18:15", "good, baruh hashem", s4);
         messages.add(m4);
-        SenderName s5 = new SenderName(contactUsername);
+        SenderName s5 = new SenderName(contactName);
         MessageToGet m5 = new MessageToGet("5", "18:38", "wanna go eat shreder?", s5);
         messages.add(m5);
         SenderName s6 = new SenderName("username");
         MessageToGet m6 = new MessageToGet("6", "19:01", "yes but what about crazy meat?", s6);
         messages.add(m6);
-        SenderName s7 = new SenderName(contactUsername);
+        SenderName s7 = new SenderName(contactName);
         MessageToGet m7 = new MessageToGet("7", "19:05", "next time", s7);
         messages.add(m7);
         SenderName s8 = new SenderName("username");
@@ -82,10 +82,10 @@ public class chatActivity extends AppCompatActivity {
         SenderName s9 = new SenderName("username");
         MessageToGet m9 = new MessageToGet("9", "20:57", "are u here?", s9);
         messages.add(m9);
-        SenderName s10 = new SenderName(contactUsername);
+        SenderName s10 = new SenderName(contactName);
         MessageToGet m10 = new MessageToGet("10", "20:58", "yea im parking. Long message to see how it loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooook", s10);
         messages.add(m10);
-        SenderName s11 = new SenderName(contactUsername);
+        SenderName s11 = new SenderName(contactName);
         MessageToGet m11 = new MessageToGet("11", "21:05", "i see u!", s11);
         messages.add(m11);
         adapter.setMessages(messages);
@@ -102,8 +102,5 @@ public class chatActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
-
-
 }
