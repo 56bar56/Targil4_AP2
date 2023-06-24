@@ -3,8 +3,10 @@ package com.example.targil4_ap2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,20 +14,36 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.targil4_ap2.adapters.MessagesListAdapter;
+import com.example.targil4_ap2.api.UsersApiToken;
+import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.SenderName;
+import com.example.targil4_ap2.items.messageContent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class chatActivity extends AppCompatActivity {
 
     private FloatingActionButton btnBack;
     private ImageView profileImg;
     private TextView displayName;
+    private FloatingActionButton btnSend;
+    private EditText inputMes;
     private AppDB db;
     private PostDao postDao;
+    private Retrofit retrofit;
+    private WebServiceAPI webServiceAPI;
+    private UsersApiToken user;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +55,8 @@ public class chatActivity extends AppCompatActivity {
         //String contactUsername = intent.getStringExtra("contactUsername");
         String contactName = intent.getStringExtra("contactName");
         String contactImg = intent.getStringExtra("contactImg");
+        String username= intent.getStringExtra("username");
+        String password= intent.getStringExtra("password");
 
         // Find views by their IDs
         displayName = findViewById(R.id.displayName);
@@ -98,8 +118,8 @@ public class chatActivity extends AppCompatActivity {
         List<DbObject> DbObj = postDao.index();
         List<MessageToGet> msgs = new ArrayList<>();
         int index = -1;
-        for(int i = 0; i < DbObj.size(); i++){
-            if(contactName.equals(DbObj.get(i).getContactName().getUser().getDisplayName())){
+        for (int i = 0; i < DbObj.size(); i++) {
+            if (contactName.equals(DbObj.get(i).getContactName().getUser().getDisplayName())) {
                 index = i;
             }
         }
@@ -125,5 +145,63 @@ public class chatActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+
+
+        btnSend = findViewById(R.id.btnSend);
+        user = new UsersApiToken(db, postDao);
+        retrofit = new Retrofit.Builder()
+                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        webServiceAPI = retrofit.create(WebServiceAPI.class);
+        inputMes = findViewById(R.id.etMessageInput);
+        /*
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newMessage = inputMes.getText().toString();
+                if (newMessage.isEmpty()) {
+                    Toast.makeText(chatActivity.this, "type the a message!", Toast.LENGTH_LONG).show(); //error message for server
+                } else {
+                    Callback<ResponseBody> callbackPostMes = new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+                                String token = response.body().string();
+                                String authorizationHeader = "Bearer " + token;
+
+                                Call<ResponseBody> call2 = webServiceAPI.postMessage(authorizationHeader, id, new messageContent(newMessage));
+                                call2.enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response2) {
+                                        try {
+                                            String serverReturn = response2.body().string();
+                                            System.out.println(serverReturn);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call1, Throwable t) {
+                                        System.out.println("filed");
+                                    }
+                                });
+
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            System.out.println("filed");
+                        }
+                    };
+                }
+            }
+        });*/
     }
 }

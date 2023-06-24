@@ -14,6 +14,7 @@ import androidx.room.Room;
 import com.example.targil4_ap2.api.UsersApiToken;
 import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
+import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 
 import java.io.IOException;
@@ -116,6 +117,7 @@ public class loginActivity extends AppCompatActivity {
             }
         });
     }
+
     public void dbInfo(Intent intent, String username, String password) {
         Callback<ResponseBody> callbackForGetUserChatsInfo = new Callback<ResponseBody>() {
             @Override
@@ -151,6 +153,7 @@ public class loginActivity extends AppCompatActivity {
                                     }
                                 }
                                 List<DbObject> check = postDao.index();  // Retrieve existing data from the database
+                                getAllMessages(username,password);
                                 startActivity(intent);
                             }
 
@@ -173,4 +176,44 @@ public class loginActivity extends AppCompatActivity {
         };
         user.getChats(username, password, callbackForGetUserChatsInfo);
     }
+
+
+    public void getAllMessages(String userName, String password) {
+        Callback<ResponseBody> getAllMessagesCallback =new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String token = response.body().string();
+                    String authorizationHeader = "Bearer " + token;
+                    List<DbObject> listCon= postDao.index();
+                    for (DbObject contactDb:listCon) {
+                        Call<List<MessageToGet>> call2 = webServiceAPI.getMessages(authorizationHeader, contactDb.getContactName().getId());
+                        call2.enqueue(new Callback<List<MessageToGet>>() {
+                            @Override
+                            public void onResponse(Call<List<MessageToGet>> call2, Response<List<MessageToGet>> response2) {
+                                List<MessageToGet> serverReturn = response2.body();
+                                contactDb.setMsgList(serverReturn);
+                                postDao.update(contactDb);
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<MessageToGet>> call2, Throwable t) {
+                                Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(loginActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
+            }
+        };
+        user.getMessages(userName,password,getAllMessagesCallback);
+    }
 }
+

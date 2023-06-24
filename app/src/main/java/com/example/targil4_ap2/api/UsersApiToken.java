@@ -118,9 +118,11 @@ public class UsersApiToken {
         });
     }
 
-    public void getMessages(String username, String password, String id) {
+    public void getMessages(String username, String password, Callback<ResponseBody> callback) {
         Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(callback);
+
+       /* call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
@@ -150,6 +152,6 @@ public class UsersApiToken {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 System.out.println("filed");
             }
-        });
+        });*/
     }
 }

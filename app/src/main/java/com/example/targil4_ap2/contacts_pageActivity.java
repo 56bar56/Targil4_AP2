@@ -101,7 +101,7 @@ public class contacts_pageActivity extends AppCompatActivity {
             }
             chats.add(con);
         }
-        adapter.setContacts(contacts);
+        adapter.setContacts(chats);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {
             @Override
@@ -114,6 +114,8 @@ public class contacts_pageActivity extends AppCompatActivity {
                 intent.putExtra("contactId", contact.getId());
                 intent.putExtra("contactName", contact.getUser().getDisplayName());
                 intent.putExtra("contactImg", contact.getUser().getProfilePic());
+                intent.putExtra("username", username);
+                intent.putExtra("password", password);
                 startActivity(intent);
             }
         });
