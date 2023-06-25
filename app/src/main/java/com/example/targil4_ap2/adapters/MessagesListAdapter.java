@@ -29,9 +29,11 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
     private final LayoutInflater mInflater;
     private List<MessageToGet> messsages;
+    private String username;
 
-    public MessagesListAdapter(Context context) {
+    public MessagesListAdapter(Context context, String username) {
         mInflater = LayoutInflater.from(context);
+        this.username = username;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
             holder.message.setText(current.getContent());
             holder.hourSent.setText(current.getCreated());
 
-            if (current.getSender().getUsername().equals("username")) { // TODO change to your username
+            if (current.getSender().getUsername().equals(this.username)) { // TODO change to your username
                 holder.message.setBackgroundResource(R.drawable.message_out_bubble);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.message.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_END);

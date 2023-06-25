@@ -64,44 +64,50 @@ public class ChooseConNameActivity extends AppCompatActivity {
                 if (contactName.isEmpty()) {
                     Toast.makeText(ChooseConNameActivity.this, "type the contact's username!", Toast.LENGTH_LONG).show(); //error message for server
                 } else {
-                    Callback<ResponseBody> postContactCallback = new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            try {
-                                String token = response.body().string();
-                                String authorizationHeader = "Bearer " + token;
+                    boolean ifAlreadyInside = checkIfInside(contactName);
+                    if (ifAlreadyInside) {
+                        Callback<ResponseBody> postContactCallback = new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
+                                    String token = response.body().string();
+                                    String authorizationHeader = "Bearer " + token;
 
-                                Call<AddNewContact> call2 = webServiceAPI.postChat(authorizationHeader, new ContactForCreate(contactName));
-                                call2.enqueue(new Callback<AddNewContact>() {
-                                    @Override
-                                    public void onResponse(Call<AddNewContact> call2, Response<AddNewContact> response2) {
-                                        if(!response2.isSuccessful()) {
-                                            Toast.makeText(ChooseConNameActivity.this, "no such username", Toast.LENGTH_LONG).show(); //error message for server
+                                    Call<AddNewContact> call2 = webServiceAPI.postChat(authorizationHeader, new ContactForCreate(contactName));
+                                    call2.enqueue(new Callback<AddNewContact>() {
+                                        @Override
+                                        public void onResponse(Call<AddNewContact> call2, Response<AddNewContact> response2) {
+                                            if (!response2.isSuccessful()) {
+                                                Toast.makeText(ChooseConNameActivity.this, "no such username", Toast.LENGTH_LONG).show(); //error message for server
 
-                                        } else {
-                                            AddNewContact serverReturn = response2.body();
-                                            PutContactsInDb(intentFromChats.getStringExtra("username"), intentFromChats.getStringExtra("password")); //call to the function that get all contacts from the server into our db
-                                            //startActivity(new Intent(getApplicationContext(), contacts_pageActivity.class));
+                                            } else {
+                                                AddNewContact serverReturn = response2.body();
+                                                PutContactsInDb(intentFromChats.getStringExtra("username"), intentFromChats.getStringExtra("password")); //call to the function that get all contacts from the server into our db
+                                                //startActivity(new Intent(getApplicationContext(), contacts_pageActivity.class));
+                                            }
+
                                         }
 
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<AddNewContact> call2, Throwable t) {
-                                        Toast.makeText(ChooseConNameActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show(); //error message for server
-                                    }
-                                });
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                                        @Override
+                                        public void onFailure(Call<AddNewContact> call2, Throwable t) {
+                                            Toast.makeText(ChooseConNameActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show(); //error message for server
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(ChooseConNameActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show(); //error message for server
-                        }
-                    };
-                    user.postChat(intentFromChats.getStringExtra("username"), intentFromChats.getStringExtra("password"), postContactCallback);
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Toast.makeText(ChooseConNameActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show(); //error message for server
+                            }
+                        };
+                        user.postChat(intentFromChats.getStringExtra("username"), intentFromChats.getStringExtra("password"), postContactCallback);
+                    }
+                    else{
+                        Toast.makeText(ChooseConNameActivity.this, "you already have a chat with that user", Toast.LENGTH_LONG).show(); //error message for server
+                    }
                 }
 
             }
@@ -113,6 +119,16 @@ public class ChooseConNameActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    public boolean checkIfInside(String contactName){
+        List<DbObject> l = postDao.index();
+        boolean flag = false;
+        for(int i = 0; i < l.size(); i++){
+            if(l.get(i).getContactName().getUser().getUsername().equals(contactName)){
+                flag = true;
+            }
+        }
+        return !flag;
     }
 
     /**
