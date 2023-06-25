@@ -29,7 +29,7 @@ public class contacts_pageActivity extends AppCompatActivity {
     /**
      * Function get userename that you just send him a meesage or got message by him, and get it the
      * top of the contact list.
-     * @param username
+     * @param username of the contact
      */
     public void moveContactToFirst(String username) {
         for (int i = 0; i < contacts.size(); i++) {
@@ -133,11 +133,14 @@ public class contacts_pageActivity extends AppCompatActivity {
             }
         });
 
+
+
         btnLogout= findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
     }

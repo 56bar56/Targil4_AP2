@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#FFFEFA">
 
@@ -17,30 +18,68 @@
         android:textColor="#F7F1AE"
         android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/editNewConName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter text"
-        android:padding="12dp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCancelAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:backgroundTint="#74CFA0"
+        android:contentDescription="Back Button"
+        android:src="@drawable/back_foreground"
+        app:maxImageSize="48dp"
+        app:tint="#F7F1AE" />
+
+    <TextView
+        android:layout_width="259dp"
+        android:layout_height="61dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="163dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginBottom="459dp"
+        android:text="Add contact"
+        android:textAlignment="center"
+        android:textColor="#0FADCF"
+        android:textSize="40dp"
+        android:textStyle="bold" />
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editNewConName"
-        android:layout_marginTop="16dp">
+        android:layout_width="296dp"
+        android:layout_height="200dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="54dp"
+        android:layout_marginBottom="257dp"
+        android:background="@drawable/add_contact_edittext"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editNewConName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:hint="Contact's Username"
+            android:textSize="20dp"
+            android:textColor="#0FADCF"
+            android:textColorHint="#0FADCF" />
 
         <Button
             android:id="@+id/btnSaveCon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save" />
-
-        <Button
-            android:id="@+id/btnCancelAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_marginStart="16dp" />
+            android:layout_width="188dp"
+            android:layout_height="58dp"
+            android:background="@drawable/register_button_rounded"
+            android:text="Add"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 
