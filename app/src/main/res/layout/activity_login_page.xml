@@ -37,7 +37,7 @@
         android:layout_marginTop="634dp"
         android:layout_marginEnd="11dp"
         android:layout_marginBottom="27dp"
-        android:text="Already has an account? press here"
+        android:text="Doesn't have an account? press here"
         android:textAlignment="center"
         android:textColor="#543734"
         android:textSize="20dp"

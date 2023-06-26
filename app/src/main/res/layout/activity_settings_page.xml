@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#FFFEFA">
+    android:background="#FFFEFA"
+    android:id="@+id/settingsRelativeLayout">
 
     <TextView
         android:id="@+id/tvChatRoom"
