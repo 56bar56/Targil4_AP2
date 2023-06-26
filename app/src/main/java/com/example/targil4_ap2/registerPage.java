@@ -1,13 +1,22 @@
 package com.example.targil4_ap2;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -18,9 +27,11 @@ import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,12 +39,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+@RequiresApi(api = Build.VERSION_CODES.R)
 public class registerPage extends AppCompatActivity {
     Button registerBtn;
     TextView toLogIn;
     private EditText editRegisterUsername;
     private EditText editRegisterPassword;
     private EditText editRegisterEmail;
+    private EditText editProfileName;
+    private CircleImageView imageView;
     private AppDB db;
     private PostDao postDao;
     private Retrofit retrofit;
@@ -49,6 +64,7 @@ public class registerPage extends AppCompatActivity {
         editRegisterUsername = findViewById(R.id.registerUsername);
         editRegisterPassword = findViewById(R.id.registerPassword);
         editRegisterEmail = findViewById(R.id.registerEmail);
+        editProfileName = findViewById(R.id.registerDisplayName);
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
         user = new UsersApiToken(db, postDao);
@@ -57,6 +73,13 @@ public class registerPage extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
+        imageView = findViewById(R.id.registerProfileImage);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                function();
+            }
+        });
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,8 +88,24 @@ public class registerPage extends AppCompatActivity {
                 String password = editRegisterPassword.getText().toString();
                 String email = editRegisterEmail.getText().toString();
                 //להוסיף שם פרופיל ותמונה
-                String profileName = "prof";
+                String profileName = editProfileName.getText().toString();
+                //String profilePic = imageView.toString();
                 String profilePic = "";
+                Bitmap resizedBitmap = null;
+
+                try {
+                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                    Bitmap bm = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                    resizedBitmap = Bitmap.createScaledBitmap(bm, 30, 25, false);
+                    resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
+                    byte[] profileBitmap = byteArray.toByteArray();
+                    profilePic = android.util.Base64.encodeToString(profileBitmap, android.util.Base64.DEFAULT);
+
+                } catch (Exception e) {
+                    Toast.makeText(registerPage.this, "Error with the image", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 String errorMsg="";
                 if (password.length() > 16 || password.length() < 4) {
                     informationOk = false;
@@ -146,6 +185,32 @@ public class registerPage extends AppCompatActivity {
         });
     }
 
+    private void function() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        launchSomeActivity.launch(i);
+    }
+
+    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Bitmap selectedBitmap;
+                        try {
+                            selectedBitmap = MediaStore.Images.Media.getBitmap(
+                                    getContentResolver(), selectedImageUri);
+                            imageView.setImageBitmap(selectedBitmap);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+    );
+
     public void chatsPageAfterRegister(String username, String password) {
         Callback<ResponseBody> callbackForGetUserInfo = new Callback<ResponseBody>() {
             @Override
@@ -186,6 +251,7 @@ public class registerPage extends AppCompatActivity {
         user.getUser(username, password, callbackForGetUserInfo);
 
     }
+
     public void dbInfo(Intent intent, String username, String password) {
         Callback<ResponseBody> callbackForGetUserChatsInfo = new Callback<ResponseBody>() {
             @Override

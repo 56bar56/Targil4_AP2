@@ -15,6 +15,7 @@ import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.ContactForCreate;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ChooseConNameActivity extends AppCompatActivity {
 
     private EditText editConName;
     private Button buttonSave;
-    private Button buttonCancel;
+    private FloatingActionButton buttonCancel;
     private AppDB db;
     private PostDao postDao;
     private Retrofit retrofit;
@@ -112,7 +113,6 @@ public class ChooseConNameActivity extends AppCompatActivity {
 
             }
         });
-
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

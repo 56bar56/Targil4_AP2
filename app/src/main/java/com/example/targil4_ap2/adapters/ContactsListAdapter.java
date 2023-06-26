@@ -1,6 +1,8 @@
 package com.example.targil4_ap2.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +53,20 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             final Contact current = contacts.get(position);
             holder.dissplayName.setText(current.getUser().getDisplayName());
             holder.date.setText(current.getLastMessage().getCreated());
-            //String profilePicName = current.getUser().getProfilePic();
-            //int resourceId = holder.itemView.getContext().getResources().getIdentifier(profilePicName, "drawable", holder.itemView.getContext().getPackageName());
-            //holder.profileImg.setImageResource(resourceId);
+            String profilePicName = current.getUser().getProfilePic();
+            try {
+                byte[] decodedBytes = android.util.Base64.decode(profilePicName, android.util.Base64.DEFAULT);
+                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+                // Set the decodedBitmap to your ImageView
+                holder.profileImg.setImageBitmap(decodedBitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Handle the error if decoding or setting the image fails
+            }
             //TODO change to the user img
-            int resourceId = holder.itemView.getContext().getResources().getIdentifier("messi", "drawable", holder.itemView.getContext().getPackageName());
-            holder.profileImg.setImageResource(resourceId);
+            //int resourceId = holder.itemView.getContext().getResources().getIdentifier("messi", "drawable", holder.itemView.getContext().getPackageName());
+            //holder.profileImg.setImageResource(resourceId);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,5 +103,4 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
     public interface OnContactClickListener {
         void onContactClick(Contact contact);
     }
-
 }

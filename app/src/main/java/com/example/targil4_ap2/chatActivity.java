@@ -1,6 +1,8 @@
 package com.example.targil4_ap2;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -56,8 +58,8 @@ public class chatActivity extends AppCompatActivity {
         //String contactUsername = intent.getStringExtra("contactUsername");
         String contactName = intent.getStringExtra("contactName");
         String contactImg = intent.getStringExtra("contactImg");
-        String username= intent.getStringExtra("username");
-        String password= intent.getStringExtra("password");
+        String username1= intent.getStringExtra("username");
+        String password1= intent.getStringExtra("password");
 
         // Find views by their IDs
         displayName = findViewById(R.id.displayName);
@@ -65,11 +67,16 @@ public class chatActivity extends AppCompatActivity {
 
         // Set the values
         displayName.setText(contactName);
-        //TODO change to the user img
-        profileImg.setImageResource(R.drawable.messi);
+        try {
+            byte[] decodedBytes = android.util.Base64.decode(contactImg, android.util.Base64.DEFAULT);
+            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
 
+            profileImg.setImageBitmap(decodedBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         RecyclerView lstMessages = findViewById(R.id.lstMessages);
-        final MessagesListAdapter adapter = new MessagesListAdapter(this, username);
+        final MessagesListAdapter adapter = new MessagesListAdapter(this, username1);
         lstMessages.setAdapter(adapter);
         lstMessages.setLayoutManager(new LinearLayoutManager(this));
 
@@ -179,9 +186,9 @@ public class chatActivity extends AppCompatActivity {
                                             }
                                             else {
                                                 String serverReturn = response2.body().string();
-                                                updateDb(DbObj.get(finalIndex), username, password, contactId, adapter, DbObj, finalIndex);
+                                                updateDb(DbObj.get(finalIndex), username1, password1, contactId, adapter, DbObj, finalIndex);
                                                 inputMes.setText("");
-                                                updateChatTime(username, password, contactId, DbObj, finalIndex);
+                                                updateChatTime(username1, password1, contactId, DbObj, finalIndex);
                                             }
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
@@ -204,7 +211,7 @@ public class chatActivity extends AppCompatActivity {
                             System.out.println("filed");
                         }
                     };
-                    user.getMessages(username,password,callbackPostMes);
+                    user.getMessages(username1,password1,callbackPostMes);
 
                 }
             }
@@ -274,6 +281,8 @@ public class chatActivity extends AppCompatActivity {
                             c.setLastMessage(l.get(index).getLastMessage());
                             newDb.setContactName(c);
                             postDao.insert(newDb);
+                            //moveContactToFirst(DbObj.get(index).getContactName().getUser().getUsername(), l);
+
                         }
 
                         @Override
@@ -293,5 +302,20 @@ public class chatActivity extends AppCompatActivity {
             }
         };
         user.getMessages(username,password,getAllMessagesCallback);
+    }
+    /**
+     * Function get userename that you just send him a meesage or got message by him, and get it the
+     * top of the contact list.
+     * @param username
+     */
+    public void moveContactToFirst(String username, List<Contact> contacts) {
+        for (int i = 0; i < contacts.size(); i++) {
+            Contact contact = contacts.get(i);
+            if (contact.getUser().equals(username)) {
+                contacts.remove(i);
+                contacts.add(0, contact);
+                break;
+            }
+        }
     }
 }

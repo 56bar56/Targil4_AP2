@@ -8,8 +8,8 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="251dp"
-        android:layout_height="66dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -27,16 +27,12 @@
 
     <TextView
         android:id="@+id/noAccount"
-        android:layout_width="387dp"
-        android:layout_height="71dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="628dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="33dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="80dp"
         android:text="Already has an account? press here"
         android:textAlignment="center"
         android:textColor="#543734"
@@ -45,16 +41,13 @@
 
     <Button
         android:id="@+id/registerBtn"
-        android:layout_width="260dp"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="77dp"
         android:layout_marginTop="429dp"
         android:layout_marginEnd="73dp"
-        android:layout_marginBottom="163dp"
+        android:layout_marginBottom="165dp"
         android:background="@android:color/transparent"
         android:text="Sign up"
         android:textColor="#7D635B"
@@ -66,9 +59,9 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="158dp"
-        android:layout_marginBottom="510dp"
+        android:layout_marginTop="110dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onProfileImageClicked"
@@ -80,8 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="63dp"
-        android:layout_marginBottom="273dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="245dp"
         android:background="@drawable/login_edittext"
         android:orientation="vertical">
 
@@ -94,9 +87,9 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:hint="Username"
-            android:textSize="20dp"
             android:textColor="#8A706A"
-            android:textColorHint="#8A706A" />
+            android:textColorHint="#8A706A"
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/registerPassword"
@@ -104,12 +97,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="5dp"
             android:hint="Password"
-            android:textSize="20dp"
+            android:inputType="textPassword"
             android:textColor="#8A706A"
             android:textColorHint="#8A706A"
-            android:inputType="textPassword"/>
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="Must contain $, numbers, letters(size 4-16)"
+            android:textSize="13dp"
+            android:textColor="#8A706A"/>
 
         <EditText
             android:id="@+id/registerEmail"
@@ -119,9 +122,9 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:hint="Email"
-            android:textSize="20dp"
             android:textColor="#8A706A"
-            android:textColorHint="#8A706A" />
+            android:textColorHint="#8A706A"
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/registerDisplayName"
@@ -131,9 +134,9 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:hint="Display Mame"
-            android:textSize="20dp"
             android:textColor="#8A706A"
-            android:textColorHint="#8A706A" />
+            android:textColorHint="#8A706A"
+            android:textSize="20dp" />
 
     </LinearLayout>
 
