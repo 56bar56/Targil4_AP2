@@ -26,6 +26,9 @@ import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -69,7 +72,7 @@ public class registerPage extends AppCompatActivity {
         postDao = db.postDao();
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
-                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
@@ -229,6 +232,8 @@ public class registerPage extends AppCompatActivity {
                             intent.putExtra("displayName", serverReturn.getDisplayName());
                             intent.putExtra("profilePic", serverReturn.getProfilePic());
                             intent.putExtra("password", password);
+                            globalVars.username=serverReturn.getUsername();
+                            globalVars.password=password;
                             dbInfo(intent, username, password);
                             //startActivity(intent);
                         }
@@ -287,6 +292,13 @@ public class registerPage extends AppCompatActivity {
                                     }
                                 }
                                 getAllMessagesForRegister(username, password);
+                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(registerPage.this, new OnSuccessListener<InstanceIdResult>() {
+                                    @Override
+                                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                                        String newToken= instanceIdResult.getToken();
+                                        user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
+                                    }
+                                });
                                 startActivity(intent);
                             }
 

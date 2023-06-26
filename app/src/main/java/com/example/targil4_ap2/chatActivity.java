@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -47,8 +49,10 @@ public class chatActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
     private UsersApiToken user;
+    private MyService myService;
 
     protected void onCreate(Bundle savedInstanceState) {
+        myService= MyService.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_page);
 
@@ -58,9 +62,10 @@ public class chatActivity extends AppCompatActivity {
         //String contactUsername = intent.getStringExtra("contactUsername");
         String contactName = intent.getStringExtra("contactName");
         String contactImg = intent.getStringExtra("contactImg");
-        String username1= intent.getStringExtra("username");
-        String password1= intent.getStringExtra("password");
-
+        String username= intent.getStringExtra("username");
+        String password= intent.getStringExtra("password");
+        String x=intent.getStringExtra("contactUserName");
+        myService.setContactUserName(intent.getStringExtra("contactUserName"));
         // Find views by their IDs
         displayName = findViewById(R.id.displayName);
         profileImg = findViewById(R.id.profileImg);
@@ -76,50 +81,13 @@ public class chatActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         RecyclerView lstMessages = findViewById(R.id.lstMessages);
-        final MessagesListAdapter adapter = new MessagesListAdapter(this, username1);
+        final MessagesListAdapter adapter = new MessagesListAdapter(this, username);
         lstMessages.setAdapter(adapter);
         lstMessages.setLayoutManager(new LinearLayoutManager(this));
 
         // Makes sure to show it from the latest message
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         lstMessages.setLayoutManager(layoutManager);
-
-
-        List<MessageToGet> messages = new ArrayList<>();
-        SenderName s1 = new SenderName(contactName);
-        MessageToGet m1 = new MessageToGet("1", "15:55", "hello", s1);
-        messages.add(m1);
-        SenderName s2 = new SenderName("username");
-        MessageToGet m2 = new MessageToGet("2", "16:05", "how are u??", s2);
-        messages.add(m2);
-        SenderName s3 = new SenderName(contactName);
-        MessageToGet m3 = new MessageToGet("3", "18:05", "Hi, i'm good. how u doing bro?", s3);
-        messages.add(m3);
-        SenderName s4 = new SenderName("username");
-        MessageToGet m4 = new MessageToGet("4", "18:15", "good, baruh hashem", s4);
-        messages.add(m4);
-        SenderName s5 = new SenderName(contactName);
-        MessageToGet m5 = new MessageToGet("5", "18:38", "wanna go eat shreder?", s5);
-        messages.add(m5);
-        SenderName s6 = new SenderName("username");
-        MessageToGet m6 = new MessageToGet("6", "19:01", "yes but what about crazy meat?", s6);
-        messages.add(m6);
-        SenderName s7 = new SenderName(contactName);
-        MessageToGet m7 = new MessageToGet("7", "19:05", "next time", s7);
-        messages.add(m7);
-        SenderName s8 = new SenderName("username");
-        MessageToGet m8 = new MessageToGet("8", "19:08", "see u at 21:00!", s8);
-        messages.add(m8);
-        SenderName s9 = new SenderName("username");
-        MessageToGet m9 = new MessageToGet("9", "20:57", "are u here?", s9);
-        messages.add(m9);
-        SenderName s10 = new SenderName(contactName);
-        MessageToGet m10 = new MessageToGet("10", "20:58", "yea im parking. Long message to see how it loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooook", s10);
-        messages.add(m10);
-        SenderName s11 = new SenderName(contactName);
-        MessageToGet m11 = new MessageToGet("11", "21:05", "i see u!", s11);
-        messages.add(m11);
-
 
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
@@ -134,10 +102,16 @@ public class chatActivity extends AppCompatActivity {
         msgs = DbObj.get(index).getMsgList();
 
         adapter.setMessages(msgs);
-
+        myService.setOurAdapter(adapter);
 
         // Makes sure to show it from the latest message
-        int lastPosition = messages.size() - 1;
+        int lastPosition;
+        if(msgs==null) {
+             lastPosition=0;
+        } else {
+             lastPosition = msgs.size() - 1;
+
+        }
         lstMessages.scrollToPosition(lastPosition);
 
 
@@ -145,6 +119,7 @@ public class chatActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myService.setContactUserName(intent.getStringExtra(""));
                 finish();
             }
         });
@@ -155,7 +130,7 @@ public class chatActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
-                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
@@ -186,9 +161,9 @@ public class chatActivity extends AppCompatActivity {
                                             }
                                             else {
                                                 String serverReturn = response2.body().string();
-                                                updateDb(DbObj.get(finalIndex), username1, password1, contactId, adapter, DbObj, finalIndex);
+                                                updateDb(DbObj.get(finalIndex), username, password, contactId, adapter);
                                                 inputMes.setText("");
-                                                updateChatTime(username1, password1, contactId, DbObj, finalIndex);
+                                                updateChatTime(username, password, contactId, DbObj, finalIndex);
                                             }
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
@@ -211,13 +186,14 @@ public class chatActivity extends AppCompatActivity {
                             System.out.println("filed");
                         }
                     };
-                    user.getMessages(username1,password1,callbackPostMes);
+                    user.getMessages(username,password,callbackPostMes);
 
                 }
             }
         });
     }
-    public void updateDb(DbObject dbObj, String username, String password, String contactId, MessagesListAdapter adapter, List<DbObject> DbObj, int index){
+
+    public void updateDb(DbObject dbObj, String username, String password, String contactId, MessagesListAdapter adapter){
 
         //first of all delete the chat from the db and then add the new chat - update
         //postDao.delete(dbObj);
@@ -236,6 +212,7 @@ public class chatActivity extends AppCompatActivity {
                             List<MessageToGet> msgs = new ArrayList<>();
                             msgs = dbObj.getMsgList();
                             adapter.setMessages(msgs);
+                            myService.setOurAdapter(adapter);
                         }
 
                         @Override
@@ -281,8 +258,6 @@ public class chatActivity extends AppCompatActivity {
                             c.setLastMessage(l.get(index).getLastMessage());
                             newDb.setContactName(c);
                             postDao.insert(newDb);
-                            //moveContactToFirst(DbObj.get(index).getContactName().getUser().getUsername(), l);
-
                         }
 
                         @Override

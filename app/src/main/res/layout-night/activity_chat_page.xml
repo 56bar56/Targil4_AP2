@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".chatActivity"
-    android:id="@+id/ChatsPageRelativeLayout">
+    tools:context=".chatActivity">
+
 
     <LinearLayout
         android:id="@+id/contactLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#74CFA0"
+        android:background="#1D5C63"
         android:clickable="true"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,11 +26,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:backgroundTint="#74CFA0"
+            android:backgroundTint="#1D5C63"
             android:contentDescription="Back Button"
             android:src="@drawable/back_foreground"
             app:maxImageSize="48dp"
-            app:tint="#F7F1AE"
+            app:tint="#C9BFAF"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="-1dp" />
 
@@ -49,7 +49,7 @@
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:text="Contact Name"
-            android:textColor="#FFFEFA"
+            android:textColor="#C9BFAF"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="68dp"
-        android:background="#FEFFDA"
+        android:background="#1C1B1A"
         android:contentDescription="Add Message"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@+id/messageLayout"
@@ -76,7 +76,7 @@
         android:id="@+id/messageLayout"
         android:layout_width="match_parent"
         android:layout_height="68dp"
-        android:background="#74CFA0"
+        android:background="#1D5C63"
         android:orientation="horizontal"
         android:padding="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +89,8 @@
             android:layout_height="54dp"
             android:layout_weight="1"
             android:background="@drawable/edit_text_background"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
             android:hint="Message"
             android:imeOptions="actionSend"
             android:inputType="textMultiLine"
@@ -103,11 +105,11 @@
             android:layout_margin="0dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
-            android:backgroundTint="#F7F1AE"
+            android:backgroundTint="#1D5C63"
             android:contentDescription="Back Button"
             android:src="@drawable/send_foreground"
             app:maxImageSize="48dp"
-            app:tint="#74CFA0" />
+            app:tint="#C9BFAF" />
 
 
     </LinearLayout>

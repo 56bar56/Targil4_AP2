@@ -5,6 +5,7 @@ import com.example.targil4_ap2.DbObject;
 import com.example.targil4_ap2.MyApplication;
 import com.example.targil4_ap2.PostDao;
 import com.example.targil4_ap2.R;
+import com.example.targil4_ap2.globalVars;
 import com.example.targil4_ap2.items.AddNewContact;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.ContactForCreate;
@@ -31,7 +32,7 @@ public class UsersApiToken {
 
     public UsersApiToken(AppDB DB, PostDao postDao) {
         retrofit = new Retrofit.Builder()
-                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
@@ -39,8 +40,9 @@ public class UsersApiToken {
         this.postDao = postDao;
     }
 
-    public void getToken(String username, String password) {
-        Call<ResponseBody> call = webServiceAPI.getTokenFromServer(new loginInfo(username, password));
+    public void getTokenWithFireBase(String username, String password, String token) {
+        String authorizationHeader = "Bearer " + token;
+        Call<ResponseBody> call = webServiceAPI.getTokenFromServerFireBase(authorizationHeader,new loginInfo(username, password));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

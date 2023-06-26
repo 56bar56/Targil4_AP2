@@ -13,7 +13,11 @@ import com.example.targil4_ap2.R;
 import com.example.targil4_ap2.items.MessageToGet;
 
 import java.util.List;
-
+import java.util.Locale;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapter.MessageViewHolder> {
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -41,12 +45,28 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
         View itemView = mInflater.inflate(R.layout.message_layout, parent, false);
         return new MessageViewHolder(itemView);
     }
+    public String fixDate(String date) {
+        String inputDateString = date;
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault());
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("HH:mm dd.MM.yy", Locale.getDefault());
 
+        try {
+            Date inputDate = inputDateFormat.parse(inputDateString);
+            String cleanedDateString = outputDateFormat.format(inputDate);
+            return cleanedDateString;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         if (messsages != null) {
             final MessageToGet current = messsages.get(position);
             holder.message.setText(current.getContent());
-            holder.hourSent.setText(current.getCreated());
+            String date = fixDate(current.getCreated());
+            if(date != null)
+                holder.hourSent.setText(date);
+            else
+                holder.hourSent.setText(current.getCreated());
 
             if (current.getSender().getUsername().equals(this.username)) { // TODO change to your username
                 holder.message.setBackgroundResource(R.drawable.message_out_bubble);

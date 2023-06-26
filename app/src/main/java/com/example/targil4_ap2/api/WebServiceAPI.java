@@ -23,7 +23,9 @@ import retrofit2.http.Path;
 public interface WebServiceAPI {
     @POST("Tokens")
     Call<ResponseBody> getTokenFromServer(@Body loginInfo info);
-
+    @POST("Tokens")
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> getTokenFromServerFireBase(@Header("authorization") String authorization,@Body loginInfo info);
     @POST("Users")
     Call<ResponseBody> postUser(@Body UserToPost user);
 

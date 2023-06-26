@@ -48,7 +48,7 @@ public class ChooseConNameActivity extends AppCompatActivity {
         postDao = db.postDao();
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
-                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
@@ -113,6 +113,7 @@ public class ChooseConNameActivity extends AppCompatActivity {
 
             }
         });
+
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

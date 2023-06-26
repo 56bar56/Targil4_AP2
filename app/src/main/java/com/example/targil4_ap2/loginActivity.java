@@ -16,6 +16,9 @@ import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,7 +53,7 @@ public class loginActivity extends AppCompatActivity {
         postDao = db.postDao();
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
-                .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
+                .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
@@ -62,6 +65,8 @@ public class loginActivity extends AppCompatActivity {
                 if (username.isEmpty() || password.isEmpty()) {
                     //is empty
                 } else {
+                    globalVars.username=username;
+                    globalVars.password=password;
                     Callback<ResponseBody> callbackForGetUserInfo = new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -113,7 +118,8 @@ public class loginActivity extends AppCompatActivity {
         toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), registerPage.class));
+                Intent newIntene=new Intent(getApplicationContext(),registerPage.class);
+                startActivity(newIntene);
             }
         });
     }
@@ -154,6 +160,13 @@ public class loginActivity extends AppCompatActivity {
                                 }
                                 List<DbObject> check = postDao.index();  // Retrieve existing data from the database
                                 getAllMessagesForLogin(username,password);
+                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(loginActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                                    @Override
+                                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                                        String newToken= instanceIdResult.getToken();
+                                        user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
+                                    }
+                                });
                                 startActivity(intent);
                             }
 
