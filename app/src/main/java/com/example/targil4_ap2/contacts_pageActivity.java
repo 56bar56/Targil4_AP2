@@ -62,6 +62,7 @@ public class contacts_pageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        myService= MyService.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_page);
         // Retrieve the values from the intent extras
@@ -87,7 +88,6 @@ public class contacts_pageActivity extends AppCompatActivity {
             chats.add(con);
         }
         adapter.setContacts(chats);
-        myService= MyService.getInstance();
         myService.setAdapterCon(adapter);
 
         adapter.setOnContactClickListener(new ContactsListAdapter.OnContactClickListener() {

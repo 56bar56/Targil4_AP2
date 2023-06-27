@@ -18,11 +18,13 @@ import com.example.targil4_ap2.adapters.MessagesListAdapter;
 import com.example.targil4_ap2.api.UsersApiToken;
 import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
+import com.example.targil4_ap2.items.MessageLast;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -132,16 +134,28 @@ public class MyService extends FirebaseMessagingService {
                                                     List<MessageToGet> serverReturn = response2.body();
                                                     newDb.setMsgList(serverReturn);
                                                     postDao.update(newDb);
-                                                    handler.post(() -> {
-                                                        if (refreshChat) {
-                                                            myService.adapter.setMessages(serverReturn);
-                                                            refreshChat = false;
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (refreshChat) {
+                                                                myService.adapter.setMessages(serverReturn);
+                                                                refreshChat = false;
+                                                            }
+                                                            if (myService.adapterCon != null) {
+                                                                List<DbObject> DbObj = postDao.index();
+                                                                List<Contact> chats = new ArrayList<>();
+                                                                for(int i = 0; i < DbObj.size(); i++){
+                                                                    Contact con = DbObj.get(i).getContactName();
+                                                                    if(con.getLastMessage() == null){
+                                                                        con.setLastMessage(new MessageLast("", "", ""));
+                                                                    }
+                                                                    chats.add(con);
+                                                                }
+                                                                myService.adapterCon.setContacts(chats);
+                                                            }
                                                         }
-                                                        if (myService.adapterCon != null) {
-                                                            myService.adapterCon.setContacts(l);
-                                                        }
-
                                                     });
+
                                                 }
 
                                                 @Override
