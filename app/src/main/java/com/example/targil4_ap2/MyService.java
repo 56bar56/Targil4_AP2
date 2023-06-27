@@ -22,9 +22,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.room.Room;
 
+import com.example.targil4_ap2.adapters.ContactsListAdapter;
 import com.example.targil4_ap2.adapters.MessagesListAdapter;
 import com.example.targil4_ap2.api.UsersApiToken;
 import com.example.targil4_ap2.api.WebServiceAPI;
+import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -42,8 +44,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyService extends FirebaseMessagingService {
     private String contactUserName;
     private MessagesListAdapter adapter;
-    private boolean refreshChat=false;
-    private Handler handler=new Handler(Looper.getMainLooper());
+
+    public void setAdapterCon(ContactsListAdapter adapterCon) {
+        this.adapterCon = adapterCon;
+    }
+
+    private ContactsListAdapter adapterCon=null;
+    private boolean refreshChat = false;
+    private Handler handler = new Handler(Looper.getMainLooper());
     private static MyService myService;
 
     public void setContactUserName(String contactUserName) {
@@ -53,14 +61,17 @@ public class MyService extends FirebaseMessagingService {
     public void setOurAdapter(MessagesListAdapter adapter) {
         this.adapter = adapter;
     }
+
     public static MyService getInstance() {
-        if(myService==null) {
-            myService=new MyService();
+        if (myService == null) {
+            myService = new MyService();
         }
         return myService;
     }
+
     public MyService() {
     }
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getNotification() != null) {
@@ -76,63 +87,94 @@ public class MyService extends FirebaseMessagingService {
                 return;
             }
             notificationManager.notify(1, builder.build());
-            if(globalVars.username==""&&globalVars.password=="") {
+            if (globalVars.username == "" && globalVars.password == "") {
 
             } else {
                 AppDB db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
-                PostDao  postDao = db.postDao();
-               UsersApiToken user = new UsersApiToken(db, postDao);
-               Retrofit  retrofit = new Retrofit.Builder()
+                PostDao postDao = db.postDao();
+                UsersApiToken user = new UsersApiToken(db, postDao);
+                Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(globalVars.server)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 WebServiceAPI webServiceAPI = retrofit.create(WebServiceAPI.class);
-                Callback<ResponseBody> getAllMessagesCallback =new Callback<ResponseBody>() {
+                Callback<ResponseBody> getAllMessagesCallback = new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         try {
                             String token = response.body().string();
                             String authorizationHeader = "Bearer " + token;
-                            List<DbObject> listCon= postDao.index();
-                            String[] words = remoteMessage.getNotification().getTitle().split(" ");
-                            String reciveUsername="";
-                            for(int i=0;i<words.length;i++) {
-                                if(i>2) {
-                                    reciveUsername+=words[i];
-                                    if(i<words.length-1) {
-                                        reciveUsername+=" ";
+
+
+                            Call<List<Contact>> call3 = webServiceAPI.getChats(authorizationHeader);
+
+
+                            call3.enqueue(new Callback<List<Contact>>() {
+                                @Override
+                                public void onResponse(Call<List<Contact>> call3, Response<List<Contact>> response2) {
+                                    List<Contact> l = response2.body();
+                                    //creat a dcObject for the inseration
+                                    List<DbObject> existingData = postDao.index();  // Retrieve existing data from the database
+                                    String[] words = remoteMessage.getNotification().getTitle().split(" ");
+                                    String reciveUsername = "";
+                                    for (int i = 0; i < words.length; i++) {
+                                        if (i > 2) {
+                                            reciveUsername += words[i];
+                                            if (i < words.length - 1) {
+                                                reciveUsername += " ";
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                            for (DbObject contactDb:listCon) {
-                                if(contactDb.getContactName().getUser().getUsername().equals(reciveUsername)) {
-                                    if(myService.contactUserName.equals(reciveUsername)) {
-                                        refreshChat=true;
-                                    }
-                                    Call<List<MessageToGet>> call2 = webServiceAPI.getMessages(authorizationHeader, contactDb.getContactName().getId());
-                                    call2.enqueue(new Callback<List<MessageToGet>>() {
-                                        @Override
-                                        public void onResponse(Call<List<MessageToGet>> call2, Response<List<MessageToGet>> response2) {
-                                            List<MessageToGet> serverReturn = response2.body();
-                                            contactDb.setMsgList(serverReturn);
-                                            postDao.update(contactDb);
-                                            handler.post(new Runnable() {
+                                    for (int i = 0; i < l.size(); i++) {
+                                        if (l.get(i).getUser().getUsername().equals(reciveUsername)) {
+                                            if (reciveUsername.equals(myService.contactUserName)) {
+                                                refreshChat = true;
+                                            }
+                                            DbObject newDb = existingData.get(i);
+                                            postDao.delete(existingData.get(i));
+                                            Contact c = newDb.getContactName();
+                                            c.setLastMessage(l.get(i).getLastMessage());
+                                            newDb.setContactName(c);
+                                            postDao.insert(newDb);
+
+                                            Call<List<MessageToGet>> call2 = webServiceAPI.getMessages(authorizationHeader, newDb.getContactName().getId());
+                                            call2.enqueue(new Callback<List<MessageToGet>>() {
                                                 @Override
-                                                public void run() {
-                                                    if(refreshChat) {
-                                                        myService.adapter.setMessages(serverReturn);
-                                                    }
+                                                public void onResponse(Call<List<MessageToGet>> call2, Response<List<MessageToGet>> response2) {
+                                                    List<MessageToGet> serverReturn = response2.body();
+                                                    newDb.setMsgList(serverReturn);
+                                                    postDao.update(newDb);
+                                                    handler.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (refreshChat) {
+                                                                myService.adapter.setMessages(serverReturn);
+                                                                refreshChat = false;
+                                                            }
+                                                            if(myService.adapterCon!=null) {
+                                                                myService.adapterCon.setContacts(l);
+                                                            }
+
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<List<MessageToGet>> call2, Throwable t) {
                                                 }
                                             });
+
+
                                         }
 
-                                        @Override
-                                        public void onFailure(Call<List<MessageToGet>> call2, Throwable t) {
-                                        }
-                                    });
+                                    }
                                 }
 
-                            }
+                                @Override
+                                public void onFailure(Call<List<Contact>> call3, Throwable t) {
+                                }
+                            });
+
 
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -143,7 +185,7 @@ public class MyService extends FirebaseMessagingService {
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                     }
                 };
-                user.getMessages(globalVars.username,globalVars.password,getAllMessagesCallback);
+                user.getMessages(globalVars.username, globalVars.password, getAllMessagesCallback);
             }
 
         }

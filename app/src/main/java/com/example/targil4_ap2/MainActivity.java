@@ -15,6 +15,9 @@ import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.logInSave;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 
 import java.io.IOException;
@@ -69,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             globalVars.username = userLoged.get(0).getUsername();
             globalVars.password = userLoged.get(0).getPassword();
+            user=new UsersApiToken(db,postDao);
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                    String newToken= instanceIdResult.getToken();
+                    user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
+                }
+            });
             Intent intent = new Intent(getApplicationContext(), contacts_pageActivity.class);
             intent.putExtra("CheckWithServer","yes");
             startActivity(intent);

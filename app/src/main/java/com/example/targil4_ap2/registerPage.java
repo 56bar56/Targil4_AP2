@@ -290,6 +290,12 @@ public class registerPage extends AppCompatActivity {
                                     for (DbObject existingRecord : existingData) {
                                         if (newData.getUser().getUsername().equals(existingRecord.getContactName().getUser().getUsername())) {  // Compare using unique identifier
                                             found = true;
+                                            DbObject newDb = existingRecord;
+                                            postDao.delete(existingRecord);
+                                            Contact c = newDb.getContactName();
+                                            c.setLastMessage(newData.getLastMessage());
+                                            newDb.setContactName(c);
+                                            postDao.insert(newDb);
                                             break;
                                         }
                                     }
