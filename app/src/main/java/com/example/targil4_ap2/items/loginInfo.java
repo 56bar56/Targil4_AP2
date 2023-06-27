@@ -1,4 +1,4 @@
-package com.example.targil4_ap2;
+package com.example.targil4_ap2.items;
 
 public class loginInfo {
     private String username;

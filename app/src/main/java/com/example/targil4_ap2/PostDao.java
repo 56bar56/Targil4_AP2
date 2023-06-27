@@ -18,7 +18,6 @@ public interface PostDao {
 
     @Insert
     void insert(DbObject... posts);
-
     @Update
     void update(DbObject... posts);
 
@@ -27,4 +26,5 @@ public interface PostDao {
 
     @Query("DELETE FROM DbObject")
     void deleteAll();
+
 }

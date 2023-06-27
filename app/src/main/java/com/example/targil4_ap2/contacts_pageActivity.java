@@ -50,9 +50,6 @@ public class contacts_pageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_page);
-
-        Intent intent = getIntent();
-
         // Retrieve the values from the intent extras
         String username = globalVars.username;
         String password = globalVars.password;
@@ -99,10 +96,9 @@ public class contacts_pageActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent thisIntent= getIntent();
                 Intent intentAddCon = new Intent(getApplicationContext(), ChooseConNameActivity.class);
-                intentAddCon.putExtra("username", thisIntent.getStringExtra("username"));
-                intentAddCon.putExtra("password", thisIntent.getStringExtra("password"));
+                intentAddCon.putExtra("username", globalVars.username);
+                intentAddCon.putExtra("password", globalVars.password);
 
                 startActivity(intentAddCon);
             }
@@ -114,7 +110,7 @@ public class contacts_pageActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), loginActivity.class);
                 startActivity(intent);
             }
         });

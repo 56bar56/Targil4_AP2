@@ -16,6 +16,7 @@ import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
+import com.example.targil4_ap2.items.logInSave;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -40,6 +41,9 @@ public class loginActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
     private UsersApiToken user;
+    private AppDB db2;
+    private LogInSaveDao logInSaveDao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,10 @@ public class loginActivity extends AppCompatActivity {
         editLoginPassword = findViewById(R.id.LoginPassword);
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
+        db2=Room.databaseBuilder(getApplicationContext(),AppDB.class,"sveLogin").allowMainThreadQueries().build();
+        logInSaveDao=db2.logInSaveDao();
+        postDao.deleteAll();
+        logInSaveDao.deleteAll();
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
@@ -76,6 +84,7 @@ public class loginActivity extends AppCompatActivity {
                                 } else {
                                     String token = response.body().string();
                                     String authorizationHeader = "Bearer " + token;
+                                    logInSaveDao.insert(new logInSave(globalVars.username,globalVars.password));
                                     String funcUserName = username;
                                     Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
                                     call2.enqueue(new Callback<UserToGet>() {
@@ -118,8 +127,8 @@ public class loginActivity extends AppCompatActivity {
         toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntene=new Intent(getApplicationContext(),registerPage.class);
-                startActivity(newIntene);
+                Intent newIntent=new Intent(getApplicationContext(),registerPage.class);
+                startActivity(newIntent);
             }
         });
     }
@@ -138,7 +147,6 @@ public class loginActivity extends AppCompatActivity {
                         call2.enqueue(new Callback<List<Contact>>() {
                             @Override
                             public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
-                                postDao.deleteAll();
                                 List<Contact> serverReturn = response2.body();
                                 //creat a dcObject for the inseration
                                 List<DbObject> existingData = postDao.index();  // Retrieve existing data from the database
@@ -167,6 +175,7 @@ public class loginActivity extends AppCompatActivity {
                                         user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
                                     }
                                 });
+
                                 startActivity(intent);
                             }
 

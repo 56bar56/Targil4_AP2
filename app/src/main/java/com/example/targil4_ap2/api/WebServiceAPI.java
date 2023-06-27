@@ -7,7 +7,7 @@ import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
-import com.example.targil4_ap2.loginInfo;
+import com.example.targil4_ap2.items.loginInfo;
 
 import java.util.List;
 

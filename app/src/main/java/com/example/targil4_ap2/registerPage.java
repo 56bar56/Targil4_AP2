@@ -26,6 +26,7 @@ import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageToGet;
 import com.example.targil4_ap2.items.UserToGet;
 import com.example.targil4_ap2.items.UserToPost;
+import com.example.targil4_ap2.items.logInSave;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -57,6 +58,8 @@ public class registerPage extends AppCompatActivity {
     private Retrofit retrofit;
     private WebServiceAPI webServiceAPI;
     private UsersApiToken user;
+    private AppDB db2;
+    private LogInSaveDao logInSaveDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,10 @@ public class registerPage extends AppCompatActivity {
         editProfileName = findViewById(R.id.registerDisplayName);
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
+        db2=Room.databaseBuilder(getApplicationContext(),AppDB.class,"sveLogin").allowMainThreadQueries().build();
+        logInSaveDao=db2.logInSaveDao();
+        postDao.deleteAll();
+        logInSaveDao.deleteAll();
         user = new UsersApiToken(db, postDao);
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
@@ -221,6 +228,7 @@ public class registerPage extends AppCompatActivity {
                 try {
                     String token = response.body().string();
                     String authorizationHeader = "Bearer " + token;
+                    logInSaveDao.insert(new logInSave(globalVars.username,globalVars.password));
                     String funcUserName = username;
                     Call<UserToGet> call2 = webServiceAPI.getUser(authorizationHeader, funcUserName);
                     call2.enqueue(new Callback<UserToGet>() {
@@ -271,7 +279,6 @@ public class registerPage extends AppCompatActivity {
                         call2.enqueue(new Callback<List<Contact>>() {
                             @Override
                             public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
-                                postDao.deleteAll();
                                 List<Contact> serverReturn = response2.body();
                                 //creat a dcObject for the inseration
                                 List<DbObject> existingData = postDao.index();  // Retrieve existing data from the database
