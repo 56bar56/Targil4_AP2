@@ -1,7 +1,5 @@
 package com.example.targil4_ap2.api;
 
-import com.example.targil4_ap2.AppDB;
-import com.example.targil4_ap2.PostDao;
 import com.example.targil4_ap2.globalVars;
 import com.example.targil4_ap2.items.UserToPost;
 import com.example.targil4_ap2.items.messageContent;
@@ -17,19 +15,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UsersApiToken {
-    private Retrofit retrofit;
-    private WebServiceAPI webServiceAPI;
-    private AppDB db;
-    private PostDao postDao;
+    private final Retrofit retrofit;
+    private final WebServiceAPI webServiceAPI;
 
-    public UsersApiToken(AppDB DB, PostDao postDao) {
+
+    public UsersApiToken() {
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webServiceAPI = retrofit.create(WebServiceAPI.class);
-        this.db = DB;
-        this.postDao = postDao;
     }
 
     public void getTokenWithFireBase(String username, String password, String token) {
@@ -48,7 +43,6 @@ public class UsersApiToken {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("filed");
             }
         });
     }

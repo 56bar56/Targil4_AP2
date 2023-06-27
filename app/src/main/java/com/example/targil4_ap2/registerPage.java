@@ -77,7 +77,7 @@ public class registerPage extends AppCompatActivity {
         logInSaveDao=db2.logInSaveDao();
         postDao.deleteAll();
         logInSaveDao.deleteAll();
-        user = new UsersApiToken(db, postDao);
+        user = new UsersApiToken();
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -97,7 +97,6 @@ public class registerPage extends AppCompatActivity {
                 String username = editRegisterUsername.getText().toString();
                 String password = editRegisterPassword.getText().toString();
                 String email = editRegisterEmail.getText().toString();
-                //להוסיף שם פרופיל ותמונה
                 String profileName = editProfileName.getText().toString();
                 //String profilePic = imageView.toString();
                 String profilePic = "";
@@ -307,12 +306,9 @@ public class registerPage extends AppCompatActivity {
                                     }
                                 }
                                 getAllMessagesForRegister(username, password);
-                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(registerPage.this, new OnSuccessListener<InstanceIdResult>() {
-                                    @Override
-                                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                                        String newToken= instanceIdResult.getToken();
-                                        user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
-                                    }
+                                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(registerPage.this, instanceIdResult -> {
+                                    String newToken= instanceIdResult.getToken();
+                                    user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
                                 });
                                 intent.putExtra("CheckWithServer","not");
                                 startActivity(intent);

@@ -59,7 +59,7 @@ public class loginActivity extends AppCompatActivity {
         logInSaveDao=db2.logInSaveDao();
         postDao.deleteAll();
         logInSaveDao.deleteAll();
-        user = new UsersApiToken(db, postDao);
+        user = new UsersApiToken();
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())

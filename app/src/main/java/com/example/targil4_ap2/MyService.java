@@ -1,22 +1,13 @@
 package com.example.targil4_ap2;
 
-import static com.example.targil4_ap2.MyApplication.context;
-
-import android.Manifest;
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -51,7 +42,7 @@ public class MyService extends FirebaseMessagingService {
 
     private ContactsListAdapter adapterCon = null;
     private boolean refreshChat = false;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private static MyService myService;
 
     public void setContactUserName(String contactUserName) {
@@ -83,18 +74,13 @@ public class MyService extends FirebaseMessagingService {
                     .setContentText(remoteMessage.getNotification().getBody())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-
-            } else {
+            if (!(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)) {
                 notificationManager.notify(1, builder.build());
-
             }
-            if (globalVars.username == "" && globalVars.password == "") {
-
-            } else {
+            if (!(globalVars.username.equals("") && globalVars.password.equals(""))) {
                 AppDB db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
                 PostDao postDao = db.postDao();
-                UsersApiToken user = new UsersApiToken(db, postDao);
+                UsersApiToken user = new UsersApiToken();
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(globalVars.server)
                         .addConverterFactory(GsonConverterFactory.create())
@@ -146,18 +132,15 @@ public class MyService extends FirebaseMessagingService {
                                                     List<MessageToGet> serverReturn = response2.body();
                                                     newDb.setMsgList(serverReturn);
                                                     postDao.update(newDb);
-                                                    handler.post(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            if (refreshChat) {
-                                                                myService.adapter.setMessages(serverReturn);
-                                                                refreshChat = false;
-                                                            }
-                                                            if (myService.adapterCon != null) {
-                                                                myService.adapterCon.setContacts(l);
-                                                            }
-
+                                                    handler.post(() -> {
+                                                        if (refreshChat) {
+                                                            myService.adapter.setMessages(serverReturn);
+                                                            refreshChat = false;
                                                         }
+                                                        if (myService.adapterCon != null) {
+                                                            myService.adapterCon.setContacts(l);
+                                                        }
+
                                                     });
                                                 }
 

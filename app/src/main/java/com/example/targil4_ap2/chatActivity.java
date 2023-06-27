@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import com.example.targil4_ap2.items.messageContent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -49,7 +47,7 @@ public class chatActivity extends AppCompatActivity {
     private MyService myService;
 
     protected void onCreate(Bundle savedInstanceState) {
-        myService= MyService.getInstance();
+        myService = MyService.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_page);
 
@@ -59,9 +57,8 @@ public class chatActivity extends AppCompatActivity {
         //String contactUsername = intent.getStringExtra("contactUsername");
         String contactName = intent.getStringExtra("contactName");
         String contactImg = intent.getStringExtra("contactImg");
-        String username= intent.getStringExtra("username");
-        String password= intent.getStringExtra("password");
-        String x=intent.getStringExtra("contactUserName");
+        String username = intent.getStringExtra("username");
+        String password = intent.getStringExtra("password");
         myService.setContactUserName(intent.getStringExtra("contactUserName"));
         // Find views by their IDs
         displayName = findViewById(R.id.displayName);
@@ -89,7 +86,7 @@ public class chatActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "PostsDB").allowMainThreadQueries().build();
         postDao = db.postDao();
         List<DbObject> DbObj = postDao.index();
-        List<MessageToGet> msgs = new ArrayList<>();
+        List<MessageToGet> msgs;
         int index = -1;
         for (int i = 0; i < DbObj.size(); i++) {
             if (contactName.equals(DbObj.get(i).getContactName().getUser().getDisplayName())) {
@@ -103,29 +100,24 @@ public class chatActivity extends AppCompatActivity {
 
         // Makes sure to show it from the latest message
         int lastPosition;
-        if(msgs==null) {
-             lastPosition=0;
+        if (msgs == null) {
+            lastPosition = 0;
         } else {
-             lastPosition = msgs.size() - 1;
+            lastPosition = msgs.size() - 1;
 
         }
         lstMessages.scrollToPosition(lastPosition);
 
 
         btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myService.setContactUserName(intent.getStringExtra(""));
-                finish();
-            }
+        btnBack.setOnClickListener(v -> {
+            myService.setContactUserName(intent.getStringExtra(""));
+            finish();
         });
 
 
-
-
         btnSend = findViewById(R.id.btnSend);
-        user = new UsersApiToken(db, postDao);
+        user = new UsersApiToken();
         retrofit = new Retrofit.Builder()
                 .baseUrl(globalVars.server)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -134,67 +126,59 @@ public class chatActivity extends AppCompatActivity {
         inputMes = findViewById(R.id.etMessageInput);
 
         int finalIndex = index;
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newMessage = inputMes.getText().toString();
-                if (newMessage.isEmpty()) {
-                    Toast.makeText(chatActivity.this, "type the a message!", Toast.LENGTH_LONG).show(); //error message for server
-                } else {
-                    Callback<ResponseBody> callbackPostMes = new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            try {
-                                String token = response.body().string();
-                                String authorizationHeader = "Bearer " + token;
+        btnSend.setOnClickListener(v -> {
+            String newMessage = inputMes.getText().toString();
+            if (newMessage.isEmpty()) {
+                Toast.makeText(chatActivity.this, "type the a message!", Toast.LENGTH_LONG).show(); //error message for server
+            } else {
+                Callback<ResponseBody> callbackPostMes = new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+                            String token = response.body().string();
+                            String authorizationHeader = "Bearer " + token;
 
-                                Call<ResponseBody> call2 = webServiceAPI.postMessage(authorizationHeader, contactId, new messageContent(newMessage));
-                                call2.enqueue(new Callback<ResponseBody>() {
-                                    @Override
-                                    public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response2) {
-                                        try {
-                                            if (!response.isSuccessful()) {
-                                                Toast.makeText(chatActivity.this, "cant send msg", Toast.LENGTH_LONG).show();
-                                            }
-                                            else {
-                                                String serverReturn = response2.body().string();
-                                                updateDb(DbObj.get(finalIndex), username, password, contactId, adapter);
-                                                inputMes.setText("");
-                                                updateChatTime(username, password, contactId, DbObj, finalIndex);
-                                            }
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                            Call<ResponseBody> call2 = webServiceAPI.postMessage(authorizationHeader, contactId, new messageContent(newMessage));
+                            call2.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response2) {
+
+                                    if (!response.isSuccessful()) {
+                                        Toast.makeText(chatActivity.this, "cant send msg", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        updateDb(DbObj.get(finalIndex), username, password, contactId, adapter);
+                                        inputMes.setText("");
+                                        updateChatTime(username, password, contactId, DbObj);
                                     }
+                                }
 
-                                    @Override
-                                    public void onFailure(Call<ResponseBody> call1, Throwable t) {
-                                        System.out.println("filed");
-                                    }
-                                });
+                                @Override
+                                public void onFailure(Call<ResponseBody> call1, Throwable t) {
+                                    System.out.println("filed");
+                                }
+                            });
 
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            System.out.println("filed");
-                        }
-                    };
-                    user.getMessages(username,password,callbackPostMes);
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        System.out.println("filed");
+                    }
+                };
+                user.getMessages(username, password, callbackPostMes);
 
-                }
             }
         });
     }
 
-    public void updateDb(DbObject dbObj, String username, String password, String contactId, MessagesListAdapter adapter){
+    public void updateDb(DbObject dbObj, String username, String password, String contactId, MessagesListAdapter adapter) {
 
         //first of all delete the chat from the db and then add the new chat - update
         //postDao.delete(dbObj);
-        Callback<ResponseBody> getAllMessagesCallback =new Callback<ResponseBody>() {
+        Callback<ResponseBody> getAllMessagesCallback = new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
@@ -206,7 +190,7 @@ public class chatActivity extends AppCompatActivity {
                         public void onResponse(Call<List<MessageToGet>> call2, Response<List<MessageToGet>> response2) {
                             dbObj.setMsgList(response2.body());
                             postDao.update(dbObj);
-                            List<MessageToGet> msgs = new ArrayList<>();
+                            List<MessageToGet> msgs;
                             msgs = dbObj.getMsgList();
                             adapter.setMessages(msgs);
                             myService.setOurAdapter(adapter);
@@ -228,11 +212,12 @@ public class chatActivity extends AppCompatActivity {
                 Toast.makeText(chatActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
             }
         };
-        user.getMessages(username,password,getAllMessagesCallback);
+        user.getMessages(username, password, getAllMessagesCallback);
 
     }
-    public void updateChatTime(String username, String password, String contactId, List<DbObject> DbObj, int index){
-        Callback<ResponseBody> getAllMessagesCallback =new Callback<ResponseBody>() {
+
+    public void updateChatTime(String username, String password, String contactId, List<DbObject> DbObj) {
+        Callback<ResponseBody> getAllMessagesCallback = new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
@@ -244,17 +229,20 @@ public class chatActivity extends AppCompatActivity {
                         public void onResponse(Call<List<Contact>> call2, Response<List<Contact>> response2) {
                             List<Contact> l = response2.body();
                             int index = -1;
-                            for(int i = 0; i< l.size(); i++){
-                                if(l.get(i).getId().equals(contactId)){
-                                    index = i;
+                            if (l != null) {
+                                for (int i = 0; i < l.size(); i++) {
+                                    if (l.get(i).getId().equals(contactId)) {
+                                        index = i;
+                                    }
                                 }
+                                DbObject newDb = DbObj.get(index);
+                                postDao.delete(DbObj.get(index));
+                                Contact c = newDb.getContactName();
+                                c.setLastMessage(l.get(index).getLastMessage());
+                                newDb.setContactName(c);
+                                postDao.insert(newDb);
                             }
-                            DbObject newDb = DbObj.get(index);
-                            postDao.delete(DbObj.get(index));
-                            Contact c = newDb.getContactName();
-                            c.setLastMessage(l.get(index).getLastMessage());
-                            newDb.setContactName(c);
-                            postDao.insert(newDb);
+
                         }
 
                         @Override
@@ -273,17 +261,19 @@ public class chatActivity extends AppCompatActivity {
                 Toast.makeText(chatActivity.this, "problem with connecting to the server", Toast.LENGTH_LONG).show();
             }
         };
-        user.getMessages(username,password,getAllMessagesCallback);
+        user.getMessages(username, password, getAllMessagesCallback);
     }
+
     /**
      * Function get userename that you just send him a meesage or got message by him, and get it the
      * top of the contact list.
-     * @param username
+     *
+     * @param username the username
      */
     public void moveContactToFirst(String username, List<Contact> contacts) {
         for (int i = 0; i < contacts.size(); i++) {
             Contact contact = contacts.get(i);
-            if (contact.getUser().equals(username)) {
+            if (contact.getUser().getUsername().equals(username)) {
                 contacts.remove(i);
                 contacts.add(0, contact);
                 break;

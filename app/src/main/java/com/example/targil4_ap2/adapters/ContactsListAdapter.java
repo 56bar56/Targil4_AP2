@@ -18,7 +18,6 @@ import com.example.targil4_ap2.R;
 import com.example.targil4_ap2.items.Contact;
 
 import java.util.List;
-import java.util.Locale;
 
 
 public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapter.ContactViewHolder> {
@@ -52,14 +51,12 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
     }
 
     public String fixDate(String date) {
-        String inputDateString = date;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault());
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("HH:mm dd.MM.yy", Locale.getDefault());
 
         try {
-            Date inputDate = inputDateFormat.parse(inputDateString);
-            String cleanedDateString = outputDateFormat.format(inputDate);
-            return cleanedDateString;
+            Date inputDate = inputDateFormat.parse(date);
+            return outputDateFormat.format(inputDate);
         } catch (ParseException e) {
             return null;
         }
@@ -87,15 +84,11 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
                 // Handle the error if decoding or setting the image fails
             }
             //TODO change to the user img
-            //int resourceId = holder.itemView.getContext().getResources().getIdentifier("messi", "drawable", holder.itemView.getContext().getPackageName());
             //holder.profileImg.setImageResource(resourceId);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (contactClickListener != null) {
-                        contactClickListener.onContactClick(current);
-                    }
+            holder.itemView.setOnClickListener(v -> {
+                if (contactClickListener != null) {
+                    contactClickListener.onContactClick(current);
                 }
             });
 

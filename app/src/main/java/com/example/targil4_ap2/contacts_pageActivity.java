@@ -2,15 +2,10 @@ package com.example.targil4_ap2;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -21,7 +16,6 @@ import com.example.targil4_ap2.api.WebServiceAPI;
 import com.example.targil4_ap2.items.Contact;
 import com.example.targil4_ap2.items.MessageLast;
 import com.example.targil4_ap2.items.MessageToGet;
-import com.example.targil4_ap2.items.UserToGet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
@@ -115,36 +109,27 @@ public class contacts_pageActivity extends AppCompatActivity {
         });
 
         btnAdd= findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentAddCon = new Intent(getApplicationContext(), ChooseConNameActivity.class);
-                intentAddCon.putExtra("username", globalVars.username);
-                intentAddCon.putExtra("password", globalVars.password);
+        btnAdd.setOnClickListener(v -> {
+            Intent intentAddCon = new Intent(getApplicationContext(), ChooseConNameActivity.class);
+            intentAddCon.putExtra("username", globalVars.username);
+            intentAddCon.putExtra("password", globalVars.password);
 
-                startActivity(intentAddCon);
-            }
+            startActivity(intentAddCon);
         });
 
 
 
         btnLogout= findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), loginActivity.class);
-                startActivity(intent);
-            }
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), loginActivity.class);
+            startActivity(intent);
         });
         btnSettings=findViewById(R.id.btnSettings);
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToSettings= new Intent(getApplicationContext(),SettingsActivity.class);
-                goToSettings.putExtra("contactLayout",R.id.contactPageRelativeLayout);
-                startActivity(goToSettings);
+        btnSettings.setOnClickListener(v -> {
+            Intent goToSettings= new Intent(getApplicationContext(),SettingsActivity.class);
+            goToSettings.putExtra("contactLayout",R.id.contactPageRelativeLayout);
+            startActivity(goToSettings);
 
-            }
         });
         String x= getIntent().getStringExtra("CheckWithServer");
         if(getIntent().getStringExtra("CheckWithServer").equals("yes")) {
@@ -153,7 +138,7 @@ public class contacts_pageActivity extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             webServiceAPI = retrofit.create(WebServiceAPI.class);
-            user = new UsersApiToken(db, postDao);
+            user = new UsersApiToken();
             Callback<ResponseBody> callbackForGetUserChatsInfo = new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
