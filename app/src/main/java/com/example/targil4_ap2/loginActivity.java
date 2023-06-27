@@ -175,7 +175,7 @@ public class loginActivity extends AppCompatActivity {
                                         user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
                                     }
                                 });
-
+                                intent.putExtra("CheckWithServer","not");
                                 startActivity(intent);
                             }
 

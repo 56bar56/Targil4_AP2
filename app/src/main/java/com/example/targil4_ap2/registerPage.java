@@ -169,6 +169,8 @@ public class registerPage extends AppCompatActivity {
                                 }
                                 String serverReturn = response.body().string();
                                 chatsPageAfterRegister(username, password);
+                                globalVars.username=username;
+                                globalVars.password=password;
 
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -306,6 +308,7 @@ public class registerPage extends AppCompatActivity {
                                         user.getTokenWithFireBase(globalVars.username,globalVars.password,newToken);
                                     }
                                 });
+                                intent.putExtra("CheckWithServer","not");
                                 startActivity(intent);
                             }
 
