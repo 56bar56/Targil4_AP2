@@ -49,7 +49,7 @@ public class MyService extends FirebaseMessagingService {
         this.adapterCon = adapterCon;
     }
 
-    private ContactsListAdapter adapterCon=null;
+    private ContactsListAdapter adapterCon = null;
     private boolean refreshChat = false;
     private Handler handler = new Handler(Looper.getMainLooper());
     private static MyService myService;
@@ -84,9 +84,11 @@ public class MyService extends FirebaseMessagingService {
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                return;
+
+            } else {
+                notificationManager.notify(1, builder.build());
+
             }
-            notificationManager.notify(1, builder.build());
             if (globalVars.username == "" && globalVars.password == "") {
 
             } else {
@@ -151,7 +153,7 @@ public class MyService extends FirebaseMessagingService {
                                                                 myService.adapter.setMessages(serverReturn);
                                                                 refreshChat = false;
                                                             }
-                                                            if(myService.adapterCon!=null) {
+                                                            if (myService.adapterCon != null) {
                                                                 myService.adapterCon.setContacts(l);
                                                             }
 
