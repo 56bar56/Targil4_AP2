@@ -35,8 +35,8 @@ XML Pages of layout:
 
 ```
 from the client :
-Clicking on the Run button from the android studio.
+Clicking on the Run button from the android studio. You need all the files, except of "serverForAndroid" folder.
 in the server we run:
-node app.js
+node app.js with the files from "serverForAndroid" folder.
 And also turning on the MongoDB database.
 ```
